@@ -25,7 +25,7 @@ public class ConnectorServer implements Connector{
 			isRunning = true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.out.println("通信建立失败...");
+			System.out.println("fail to create connector...");
 			isRunning = false;
 			close();
 		}
@@ -56,7 +56,7 @@ public class ConnectorServer implements Connector{
 			return data;
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
-			System.out.println("客户端已下线...");
+			System.out.println("client offLine...");
 			isRunning = false;
 			close();
 		} 
@@ -69,10 +69,10 @@ public class ConnectorServer implements Connector{
 		try {
 			out.writeObject(data);
 			out.flush();
-			System.out.println("数据已发送...");
+			System.out.println("data has been sent...");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.out.println("数据发送失败...");
+			System.out.println("fail to send data...");
 			isRunning = false;
 			close();
 		}
