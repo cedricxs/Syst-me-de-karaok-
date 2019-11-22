@@ -14,7 +14,7 @@ import Resource.Request;
 import Resource.Response;
 import Resource.WriteToFile;									
 public class Client{
-	//与服务器通信的客户端
+	//connector with server
 	Connector connexion;
 	MyPlayer player;
 	ArrayList<Music> musics;
@@ -27,10 +27,10 @@ public class Client{
 			InitClient();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
-			System.out.println("服务器IP地址错误...");
+			System.out.println("wrong IP of server...");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.out.println("连接服务器失败...");
+			System.out.println("fail to conntect to server...");
 			System.exit(0);
 		}
 	}
@@ -82,7 +82,7 @@ public class Client{
 			musics.add(m);
 			play(m.getName());
 		}catch(Exception e) {
-			System.out.println("解析相应失败...");
+			System.out.println("fail to parse response...");
 		}
 	}
 
