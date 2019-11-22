@@ -65,30 +65,30 @@ public class LrcReader {
         // 存储所有歌词信息的容器
         List<Entry> list = new ArrayList<Entry>();
         try {
-            // String encoding = "utf-8"; // 字符编码，若与歌词文件编码不符将会出现乱码
+            // String encoding = "utf-8"; //encoding set 
             String encoding = "GBK";
             File file = new File(path);
-            if (file.isFile() && file.exists()) { // 判断文件是否存在
+            if (file.isFile() && file.exists()) { // if it's exist
                 InputStreamReader read = new InputStreamReader(
                         new FileInputStream(file), encoding);
                 BufferedReader bufferedReader = new BufferedReader(read);
-                String regex = "\\[(\\d{1,2}):(\\d{1,2}).(\\d{1,2})\\]"; // 正则表达式
-                Pattern pattern = Pattern.compile(regex); // 创建 Pattern 对象
-                String lineStr = null; // 每次读取一行字符串
+                String regex = "\\[(\\d{1,2}):(\\d{1,2}).(\\d{1,2})\\]"; // regex
+                Pattern pattern = Pattern.compile(regex); // creat Pattern object
+                String lineStr = null; // read string of every line
                 while ((lineStr = bufferedReader.readLine()) != null) {
                     Matcher matcher = pattern.matcher(lineStr);
                     while (matcher.find()) {
-                        // 用于存储当前时间和文字信息的容器
+                        //save current time and lyrics
                         Entry e = new Entry();
                         // System.out.println(m.group(0)); // 例：[02:34.94]
-                        // [02:34.94] ----对应---> [分钟:秒.毫秒]
-                        String min = matcher.group(1); // 分钟
-                        String sec = matcher.group(2); // 秒
-                        String mill = matcher.group(3); // 毫秒，注意这里其实还要乘以10
+                        // [02:34.94] ----correspondant---> [min:sec.millsec]
+                        String min = matcher.group(1);  
+                        String sec = matcher.group(2); 
+                        String mill = matcher.group(3); // millsec, mutiply by 10
                         long time = getLongTime(min, sec, mill + "0");
-                        // 获取当前时间的歌词信息
+                        // get lyrics of current time
                         String text = lineStr.substring(matcher.end());
-                        e.put(time, text); // 添加到容器中
+                        e.put(time, text); // add to contatiner
                         if(!list.isEmpty()) {
                         	Entry last = list.get(list.size()-1);
                         	last.setDure(e.getKey()-last.getKey());
@@ -99,10 +99,10 @@ public class LrcReader {
                 Entry last = list.get(list.size()-1);
             	last.setDure(10);
                 read.close();
-                System.out.println("解析完成。。。");
+                System.out.println("parse done...");
                 return list;
             } else {
-                System.out.println("找不到指定的文件:" + path);
+                System.out.println("Can't find file:" + path);
             }
         } catch (Exception e) {
             System.out.println("读取文件出错!");
