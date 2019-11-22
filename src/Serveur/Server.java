@@ -32,7 +32,6 @@ public class Server {
 	ServerSocket server = null;
 	BufferedWriter file =null;
 
-	//客户端通信池
 	ArrayList<Connector>clients = null;
 	ArrayList<ServerLet> serverLets;
 	ArrayList<Music> musics;
@@ -67,18 +66,18 @@ public class Server {
 			addServerLet(new ShowAllMusicServerLet("show"));
 			
 		} catch (IOException e) {
-			System.out.println("端口已被占用...");
+			System.out.println("port has been used...");
 			System.exit(0);
 		}
 		try {
-			//FileOutputStream(file,true)为追加写模式
+			//FileOutputStream(file,true)append
 			file = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(FileName),true)));
-			writeToFile("当前服务器启动时间:"+new Date().toString());
+			writeToFile("Server starts at :"+new Date().toString());
 			
 		} catch ( IOException e) {
-			System.out.println("日志文件打开失败...");
+			System.out.println("fail to open log file...");
 		}
-		System.out.println("服务器已启动!!!");
+		System.out.println("Server starts!!!");
 	}
 	
 	public void start() {
@@ -91,10 +90,10 @@ public class Server {
 			try {
 				socket = server.accept();
 				startChannel(socket);
-				System.out.println("有人连进来了");
+				System.out.println("has client come in");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				System.out.println("接受客户端出错...");
+				System.out.println("fail to get client...");
 			}
 			
 		}
@@ -114,7 +113,7 @@ public class Server {
 			file.newLine();
 			file.flush();
 		} catch (IOException e) {
-			System.out.println("日志文件记录失败");
+			System.out.println("fail to record to log");
 		}
 	}
 
@@ -124,7 +123,7 @@ public class Server {
 		Response res = new Response();
 		for(ServerLet s:serverLets) {
 			if(s.getName().equals(req.getCommande())) {
-				System.out.println("开始处理请求...");
+				System.out.println("start to deal request...");
 				s.service(req, res);
 			}
 		}
