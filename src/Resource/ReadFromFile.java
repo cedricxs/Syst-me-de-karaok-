@@ -15,7 +15,7 @@ public class ReadFromFile {
     public static byte[] readFileByBytes(String fileName) throws IOException {
         InputStream in = null;
         System.out.println("以字节为单位读取文件内容，一次读多个字节：");
-        in = new FileInputStream("music/"+fileName+".mp3");
+        in = new FileInputStream(fileName);
         int total = ReadFromFile.showAvailableBytes(in);
         // 一次读多个字节
         byte[] tempbytes = new byte[total];

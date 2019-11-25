@@ -1,11 +1,8 @@
 package Client;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-
 public class Lancer {
 
-public static void main(String[] args) throws UnknownHostException, IOException {
+public static void main(String[] args) {
 		Client c = new Client();
 		c.start();
 	}

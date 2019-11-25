@@ -53,8 +53,10 @@ public class Server {
 			server = new ServerSocket(port);
 			clients = new ArrayList<Connector>();
 			musics = new ArrayList<Music>();
-			musics.add(new Music("hahahah"));
-			musics.add(new Music("xixixix"));
+			musics.add(new Music("haha"));
+			musics.add(new Music("xixi"));
+			musics.add(new Music("芒种"));
+			musics.add(new Music("When you're gone"));
 			serverLets = new ArrayList<ServerLet>();
 			serverLetContextes = new HashMap<String,Object>();
 			serverLetContextes.put("server", server);
@@ -65,6 +67,7 @@ public class Server {
 			addServerLet(new PlayMusicServerLet("play"));
 			addServerLet(new TestServerLet("test"));
 			addServerLet(new ShowAllMusicServerLet("show"));
+			addServerLet(new TestServerLet("ajouter"));
 			
 		} catch (IOException e) {
 			System.out.println("端口已被占用...");

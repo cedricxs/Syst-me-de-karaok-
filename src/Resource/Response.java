@@ -1,6 +1,5 @@
 package Resource;
 
-
 public class Response implements Data{
 
 

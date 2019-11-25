@@ -1,5 +1,6 @@
 package Client;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +20,7 @@ public class LrcReader {
 	String LrcFileName;
 	List<Entry> lrcs;
 	int current;
+	Frame myFrame;
 	
 	public LrcReader(String LrcFileName) {
 		// TODO Auto-generated constructor stub
@@ -27,23 +29,48 @@ public class LrcReader {
 		time = 0; 
 		current = 0;
 		lrcs = this.parse(LrcFileName);
+		myFrame = new Frame();
 	}
-	void print(int index, long pos) {
+	void ChangeProcessus(int index, long pos) {
 		long start = lrcs.get(index).getKey();
 		String text = lrcs.get(index).getText();
 		long dure = lrcs.get(index).getDure();
-		System.out.println(text);
+		//System.out.println(text);
+		;
+		int position = (int) ((pos-start)*text.length()/dure);
+		int rest = text.length()+1-position;
+		int last = (int) ((pos-1-start)*text.length()/dure);
+		if(position>last) {
+			String r = myFrame.getDocument(myFrame.length()-rest-1,1);
+			myFrame.removeDocument(myFrame.length()-rest-1,1);
+			myFrame.insertDocument(r, Color.green, myFrame.length()-rest);
+		}
+		
+//		int end = myFrame.length();
+//		myFrame.removeDocument(end-text.length()-1,text.length()+1);
+//		
+//		int position = (int) ((pos-start)*text.length()/dure);
+//		
+//		String readtext = text.substring(0,position);
+//		String resttext = text.substring(position);
+//		myFrame.insertDocument(readtext, Color.green, myFrame.length());
+//		myFrame.insertDocument(resttext+"\n", Color.gray, myFrame.length());
+			
 	}
 	
 	
+	
 	public void run() {
+		myFrame.lanchFrame();
+		myFrame.insertDocument(lrcs.get(current).getText()+"\n", Color.GRAY,0);
 		timer.scheduleAtFixedRate(new TimerTask() {   
 		    public void run() {   
 		    	time++;
 		    	if(time>lrcs.get(current).getKey()+lrcs.get(current).getDure()) {
 		    		current++;
-		    		print(current,time);
+		    		myFrame.insertDocument(lrcs.get(current).getText()+"\n", Color.GRAY,myFrame.length());
 		    	}
+		    	ChangeProcessus(current,time);
 		    	//System.out.println(" ---"+((time-lrcs.get(current).getKey()))*100/lrcs.get(current).getDure()+"/100%---");
 		    }   
 		}  , new Date(), 1);
@@ -51,6 +78,7 @@ public class LrcReader {
 	public static void main(String[] args) {
 		LrcReader l = new LrcReader("client/芒种.lrc");
 		l.run();
+		
 	}
 	
 

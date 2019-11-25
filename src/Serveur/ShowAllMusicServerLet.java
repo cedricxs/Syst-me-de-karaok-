@@ -33,6 +33,7 @@ public class ShowAllMusicServerLet implements ServerLet{
 		for(Music m:musics) {
 			result.add(m.getName());
 		}
+		res.setStatus(300);
 		res.setContent(result);
 	}
 

@@ -1,8 +1,8 @@
 package Music;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -11,23 +11,38 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 
-import Client.LrcReader;
-import Client.MyPlayer;
-import javazoom.jl.decoder.JavaLayerException;
+public class Music implements Serializable{
 
-public class Music {
-
-	int foisEtreChante;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String name;
-	ArrayList<note> notes;
-	ArrayList<parole> paroles;
+	int vite;
+	private ArrayList<ArrayList<note>> notes;
+	//private ArrayList<parole> paroles;
 	
 	public Music(String name) {
 		// TODO Auto-generated constructor stub
 		this.name = name;
+		notes = new ArrayList<ArrayList<note>>();
+		
+	}
+	public void setViteRate(int rate) {
+		this.vite = (int)this.vite*rate;
+	}
+	public void setVite(int vite) {
+		this.vite = vite;
+	}
+	public int getVite() {
+		return this.vite;
+	}
+	public ArrayList<ArrayList<note>> getNotes(){
+		return this.notes;
 	}
 	public String getName() {
 		return this.name;
+	
 	}
 	
 	

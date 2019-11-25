@@ -11,7 +11,7 @@ public class WriteToFile {
 		// TODO Auto-generated constructor stub
 	}
 	public static void write(byte[] bytes,String fileName) {
-		File f = new File("client/"+fileName+".mp3");
+		File f = new File(fileName);
 		OutputStream out = null;
 		try {
 			out = new FileOutputStream(f);

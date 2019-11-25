@@ -4,5 +4,5 @@ public interface Connector extends Runnable{
 	void service(Data data);
 	Data receive();
 	void send(Data data);
-	public void close();
+	void close();
 }
