@@ -57,9 +57,10 @@ public class Client{
 		}
 	}
 	
-	public void playMidi(Music music) {
-		player.playMidi(music);
+	public void playMusic(Music music) {
+		player.playMusic(music);
 	}
+	
 	public void playMp3(String  music) {
 		player.playMp3(music);
 	}
@@ -77,7 +78,7 @@ public class Client{
 	Data parseRequest(String content) {
 		for(Music m:musics) {
 			if(m.getName().equals(content)) {
-				playMidi(m);
+				playMusic(m);
 				return null;
 			}
 		}
@@ -88,6 +89,10 @@ public class Client{
 		else if(content.indexOf("ajouter")!=-1){
 			req = new Request("ajouter");
 			req.setContent(new Music("MyMusic"));
+		}
+		else if(content.indexOf("changeVite")!=-1) {
+			player.changeVite(2);
+			return null;
 		}
 		else{
 			req = new Request("play");
@@ -104,15 +109,19 @@ public class Client{
 			return;
 		}
 		else {
-			@SuppressWarnings("unchecked")
-			Map<String,byte[]> result = (HashMap<String,byte[]>)res.getContent();
-			byte[] m = result.get("music");
-			byte[] l = result.get("lrc");
-			WriteToFile.write(m, "client/"+res.getName()+".mp3");
-			WriteToFile.write(l, "client/"+res.getName()+".lrc");
-			//Music m = (Music)res.getContent();
-			//musics.add(m);	
-			playMp3(res.getName());
+//			@SuppressWarnings("unchecked")
+//			Map<String,byte[]> result = (HashMap<String,byte[]>)res.getContent();
+//			byte[] m = result.get("music");
+//			byte[] l = result.get("lrc");
+//			WriteToFile.write(m, "client/"+res.getName()+".mp3");
+//			WriteToFile.write(l, "client/"+res.getName()+".lrc");
+//			//Music m = (Music)res.getContent();
+//			//musics.add(m);	
+//			playMp3(res.getName());
+			Music music = (Music)res.getContent();
+			System.out.println(music.getVite());
+			playMusic(music);
+			musics.add(music);
 		}
 	}
 }

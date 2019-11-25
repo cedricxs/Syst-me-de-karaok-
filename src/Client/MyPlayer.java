@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
@@ -16,6 +17,7 @@ import javax.sound.midi.Track;
 
 import Music.Music;
 import Music.note;
+import Resource.ParseMidi;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
@@ -58,8 +60,16 @@ public class MyPlayer{
 	
 	public static void main(String[] args) {
 		MyPlayer p = new MyPlayer();
-		p.playMp3("芒种");
-		//p.playMidi(new Music(""));
+		//p.playMp3("芒种");
+		ParseMidi m = new ParseMidi();
+		Music music = m.ParseMusic("music/baga01.mid");
+		p.playMusic(music);
+		Scanner s = new Scanner(System.in);
+		String c = s.nextLine();
+		if(c.equals("cv")) {
+			p.changeVite(2);
+		}
+		s.close();
 	}
 	//播放方法
     public void playMp3(String music) {
@@ -77,8 +87,8 @@ public class MyPlayer{
 			}
     }
     
-    public void playMidi(Music music) {
-    	try {
+    public void playMusic(Music music) {
+		try {
 			Sequence sequence = new Sequence(Sequence.PPQ,music.getVite());
 			ArrayList<ArrayList<note>> notes = music.getNotes();
 			for(int i=0;i<notes.size();i++) {
@@ -92,8 +102,8 @@ public class MyPlayer{
 				}
 			}
 			
-			Sequencer sequencer = MidiSystem.getSequencer();
-	        sequencer.open();
+			
+	        sequencer.open(); 
 	        sequencer.setSequence(sequence);
 			sequencer.start();
 			
@@ -101,7 +111,7 @@ public class MyPlayer{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    }
+	}
 
 
     	
