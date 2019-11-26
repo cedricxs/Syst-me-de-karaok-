@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 import Resource.Connector;
 import Resource.ConnectorClient;
@@ -13,7 +11,6 @@ import Resource.Data;
 import Music.Music;
 import Resource.Request;
 import Resource.Response;
-import Resource.WriteToFile;
 
 public class Client{
 	//与服务器通信的客户端
@@ -120,7 +117,7 @@ public class Client{
 //			playMp3(res.getName());
 			Music music = (Music)res.getContent();
 			System.out.println(music.getVite());
-			playMusic(music);
+			//playMusic(music);
 			musics.add(music);
 		}
 	}

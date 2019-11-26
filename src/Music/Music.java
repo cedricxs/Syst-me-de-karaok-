@@ -19,6 +19,7 @@ public class Music implements Serializable{
 	private static final long serialVersionUID = 1L;
 	String name;
 	int vite;
+	float divisionType;
 	private ArrayList<ArrayList<note>> notes;
 	//private ArrayList<parole> paroles;
 	
@@ -33,6 +34,13 @@ public class Music implements Serializable{
 	}
 	public void setVite(int vite) {
 		this.vite = vite;
+	}
+	
+	public void setDivisionType(float divisionType) {
+		this.divisionType = divisionType;
+	}
+	public float getDivisionType() {
+		return this.divisionType ;
 	}
 	public int getVite() {
 		return this.vite;

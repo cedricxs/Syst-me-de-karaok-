@@ -3,10 +3,10 @@ package Serveur;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
@@ -16,7 +16,6 @@ import javax.sound.midi.Track;
 
 import Music.Music;
 import Music.note;
-import Resource.ReadFromFile;
 import Resource.Request;
 import Resource.Response;
 
@@ -37,15 +36,22 @@ public class PlayMusicServerLet implements ServerLet{
 
 	@Override
 	public void service(Request req, Response res) {
-		try {
+	
 			// TODO Auto-generated method stub
-			res.setName((String)req.getContent());
-			@SuppressWarnings("unchecked")
-			ArrayList<Music> musics = (ArrayList<Music>)serverLetContextes.get("musics");
-			for(Music music:musics) {
-				if(music.getName().equals(req.getContent())) {
-					ParseMusic("music/"+music.getName()+".mid");
-					
+			String name = (String)req.getContent();
+			res.setName(name);
+			//ArrayList<Music> musics = (ArrayList<Music>)serverLetContextes.get("musics");
+			//for(Music music:musics) {
+				//if(music.getName().equals(req.getContent())) {
+					Music m = ParseMusic("music/"+name+".mid");
+					if(m==null) {
+						res.setStatus(404);
+						res.setContent("Not Found");
+					}
+					else {
+						res.setStatus(200);
+						res.setContent(m);
+					}
 //					//res.setContent(music);
 //					Map<String,byte[]> result = new HashMap<String,byte[]>();
 //					byte[] m = ReadFromFile.readFileByBytes("music/"+(String)req.getContent()+".mp3");
@@ -55,17 +61,9 @@ public class PlayMusicServerLet implements ServerLet{
 //					res.setContent(result);	
 //					res.setStatus(200);
 //					break;
-				}
-			}
-			if(res.getStatus()!=200) {
-				res.setStatus(404);
-				res.setContent("Not Found");
-			}
+//				}
+//			}
 			
-		}catch(Exception e) {
-				res.setStatus(404);
-				res.setContent("Not Found");
-		}
 	}
 
 	@Override
@@ -78,25 +76,37 @@ public class PlayMusicServerLet implements ServerLet{
 		Sequence sequence;
 		try {
 			sequence = MidiSystem.getSequence(new File(fileName));
+			System.out.println(sequence.getTickLength());
 			Track[] tracks = sequence.getTracks();
 			Music music = new Music(fileName);
 			music.setVite(sequence.getResolution());
+			music.setDivisionType(sequence.getDivisionType());
 			for(int i=0;i<tracks.length;i++) {
 				ArrayList<note> track = new ArrayList<note>(); 
 				music.getNotes().add(track);
 				for(int j=0;j<tracks[i].size();j++) {
-					//System.out.println(tracks[i].get(j).getTick());
-					//System.out.println(tracks[i].get(j).getTick());
 					MidiEvent e = tracks[i].get(j);
-					MidiMessage m = e.getMessage();
+					MidiMessage m = e.getMessage();			
 					if(m instanceof ShortMessage) {
 						ShortMessage ms = (ShortMessage)m;
 						int channel = ms.getChannel();
 						int action = ms.getCommand();
-						int instrument = ms.getData1();
-						int hauteur = ms.getData2();
+						int hauteur = ms.getData1();
+						int puissance = ms.getData2();
+						System.out.println(action);
+						System.out.println(channel);
+						System.out.println(hauteur);
+						System.out.println(puissance);
 						long time = e.getTick();
-						track.add(new note(action, channel,  instrument,  hauteur, time));
+						track.add(new note(action, channel, hauteur, puissance , time));
+					}
+					else if(m instanceof MetaMessage) {
+						MetaMessage ms = (MetaMessage)m;
+						int action = ms.getType();
+						//int channel = ms.getChannel();
+						byte[] data = ms.getData();
+						long time = e.getTick();
+						track.add(new note(data,action,time));
 					}
 				}
 			}

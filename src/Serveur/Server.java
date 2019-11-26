@@ -53,9 +53,6 @@ public class Server {
 			server = new ServerSocket(port);
 			clients = new ArrayList<Connector>();
 			musics = new ArrayList<Music>();
-			musics.add(new Music("haha"));
-			musics.add(new Music("xixi"));
-			musics.add(new Music("芒种"));
 			musics.add(new Music("When you're gone"));
 			serverLets = new ArrayList<ServerLet>();
 			serverLetContextes = new HashMap<String,Object>();

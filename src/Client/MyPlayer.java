@@ -1,12 +1,9 @@
 package Client;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
@@ -17,13 +14,10 @@ import javax.sound.midi.Track;
 
 import Music.Music;
 import Music.note;
-import Resource.ParseMidi;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.Player;
+import Util.ParseMidi;
 
 public class MyPlayer{
 
-	Player playerMp3;
 	Sequencer sequencer;
 
 	public MyPlayer() {
@@ -31,7 +25,7 @@ public class MyPlayer{
 			sequencer = MidiSystem.getSequencer();
 		} catch (MidiUnavailableException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
@@ -61,48 +55,45 @@ public class MyPlayer{
 	public static void main(String[] args) {
 		MyPlayer p = new MyPlayer();
 		//p.playMp3("芒种");
-		ParseMidi m = new ParseMidi();
-		Music music = m.ParseMusic("music/baga01.mid");
+		Music music = ParseMidi.ParseMusic("music/RanMa.mid");
 		p.playMusic(music);
 		Scanner s = new Scanner(System.in);
-		String c = s.nextLine();
-		if(c.equals("cv")) {
+		while(true) {
+			String c = s.nextLine();
+			if(c.equals("cv")) {
 			p.changeVite(2);
-		}
-		s.close();
-	}
-	//播放方法
-    public void playMp3(String music) {
-    		String fileName = "client/"+music+".mp3";
-            BufferedInputStream buffer;
-            LrcReader l = new LrcReader("client/"+music+".lrc");
-    		l.run();
-			try {
-				buffer = new BufferedInputStream(new FileInputStream(new File(fileName)));
-				playerMp3 = new Player(buffer);
-				new Thread(new Mp3()).start();
-			} catch (FileNotFoundException | JavaLayerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			}else if(c.equals("ch")){
+				p.changeHauteur();
+			}else {
+				p.changeInstrument(Integer.valueOf(c));
 			}
-    }
+		}
+		
+	}
+	
     
     public void playMusic(Music music) {
-		try {
-			Sequence sequence = new Sequence(Sequence.PPQ,music.getVite());
+    	try {
+			Sequence sequence = new Sequence(music.getDivisionType(),music.getVite());
 			ArrayList<ArrayList<note>> notes = music.getNotes();
 			for(int i=0;i<notes.size();i++) {
 				ArrayList<note> track = notes.get(i);
 				Track s = sequence.createTrack();
 				for(int j=0;j<track.size();j++) {
 					note n = track.get(j);
-					ShortMessage noteOnMsg = new ShortMessage();
-					noteOnMsg.setMessage(n.getAction(),n.getChannel() , n.getInstrument(), n.getHauteur());
-					s.add(new MidiEvent(noteOnMsg,n.getTime()));
+					if(n.getType()) {
+						MetaMessage m = new MetaMessage();
+						m.setMessage(n.getAction(), n.getData(), n.getData().length);
+						s.add(new MidiEvent(m,n.getTime()));
+					}
+					else{
+						ShortMessage shMsg = new ShortMessage();
+						shMsg.setMessage(n.getAction(),n.getChannel() ,n.getHauteur(),n.getPuissance());
+						s.add(new MidiEvent(shMsg,n.getTime()));
+					}
 				}
 			}
-			
-			
+	
 	        sequencer.open(); 
 	        sequencer.setSequence(sequence);
 			sequencer.start();
@@ -114,22 +105,53 @@ public class MyPlayer{
 	}
 
 
-    	
-    
-    class Mp3 implements Runnable{
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			try {
-				playerMp3.play();
-			} catch (JavaLayerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+    public void changeHauteur() {
+		try {
+			sequencer.stop();
+			Sequence q = sequencer.getSequence();
+			Track[] tracks = q.getTracks();
+			for(Track t:tracks) {
+				for(int i=0;i<t.size();i++) {
+					if(t.get(i).getMessage() instanceof ShortMessage) {
+						ShortMessage ms = (ShortMessage)t.get(i).getMessage();					
+						ms.setMessage(ms.getCommand(), ms.getChannel(), ms.getData1(), ms.getData2()-10>0?ms.getData2()-10:0);
+					}
+				}
 			}
+			long tick = sequencer.getTickPosition();
+			sequencer.setTickPosition(tick);
+			sequencer.start();
+		} catch (InvalidMidiDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-    	
-    }
+	}
+    
+    public void changeInstrument(int instrument) {
+		try {
+			sequencer.stop();
+			Sequence q = sequencer.getSequence();
+			Track[] tracks = q.getTracks();
+			for(Track t:tracks) {
+				for(int i=0;i<t.size();i++) {
+					if(t.get(i).getMessage() instanceof ShortMessage) {
+						ShortMessage ms = (ShortMessage)t.get(i).getMessage();	
+						if(ms.getCommand() == ShortMessage.PROGRAM_CHANGE) {
+							ms.setMessage(ms.getCommand(), ms.getChannel(), instrument, ms.getData2());
+						}
+					}
+				}
+			}
+			
+			long tick = sequencer.getTickPosition();
+			sequencer.setTickPosition(tick);
+			sequencer.start();
+		} catch (InvalidMidiDataException e) {
+			e.printStackTrace();
+		}
+	}
+    
+    
 	
 	
 }
