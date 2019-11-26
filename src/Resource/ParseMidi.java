@@ -1,14 +1,12 @@
 package Resource;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Scanner;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
@@ -88,9 +86,11 @@ public class ParseMidi {
 		Sequence sequence;
 		try {
 			sequence = MidiSystem.getSequence(new File(fileName));
+			System.out.println(sequence.getTickLength());
 			Track[] tracks = sequence.getTracks();
 			Music music = new Music(fileName);
 			music.setVite(sequence.getResolution());
+			music.setDivisionType(sequence.getDivisionType());
 			for(int i=0;i<tracks.length;i++) {
 				ArrayList<note> track = new ArrayList<note>(); 
 				music.getNotes().add(track);
@@ -99,14 +99,27 @@ public class ParseMidi {
 					//System.out.println(tracks[i].get(j).getTick());
 					MidiEvent e = tracks[i].get(j);
 					MidiMessage m = e.getMessage();
+				
 					if(m instanceof ShortMessage) {
 						ShortMessage ms = (ShortMessage)m;
 						int channel = ms.getChannel();
 						int action = ms.getCommand();
-						int instrument = ms.getData1();
-						int hauteur = ms.getData2();
+						int hauteur = ms.getData1();
+						int puissance = ms.getData2();
+						System.out.println(action);
+						System.out.println(channel);
+						System.out.println(hauteur);
+						System.out.println(puissance);
 						long time = e.getTick();
-						track.add(new note(action, channel, instrument, hauteur , time));
+						track.add(new note(action, channel, hauteur, puissance , time));
+					}
+					else if(m instanceof MetaMessage) {
+						MetaMessage ms = (MetaMessage)m;
+						int action = ms.getType();
+						//int channel = ms.getChannel();
+						byte[] data = ms.getData();
+						long time = e.getTick();
+						track.add(new note(data,action,time));
 					}
 				}
 			}
@@ -117,23 +130,55 @@ public class ParseMidi {
 			return null;
 		}
 	}
-	
-	public void playMidi(Music music) {
+	public void changeHauteur() {
 		try {
-			Sequence sequence = new Sequence(Sequence.PPQ,music.getVite());
+			sequencer.stop();
+			Sequence q = sequencer.getSequence();
+			Track[] tracks = q.getTracks();
+			Sequence n = new Sequence(q.getDivisionType(),q.getResolution());
+			for(Track t:tracks) {
+				Track m = n.createTrack();
+				for(int i=0;i<t.size();i++) {
+					if(t.get(i).getMessage() instanceof ShortMessage) {
+						ShortMessage ms = (ShortMessage)t.get(i).getMessage();					
+						ms.setMessage(ms.getCommand(), ms.getChannel(), ms.getData1(), ms.getData2()-20>0?ms.getData2()-20:0);
+						m.add(new MidiEvent(ms,t.get(i).getTick()));	
+					}
+					else {
+						m.add(t.get(i));
+					}
+				}
+			}
+			long tick = sequencer.getTickPosition();
+			sequencer.setSequence(n);
+			sequencer.setTickPosition(tick);
+			sequencer.start();
+		} catch (InvalidMidiDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void playMusic(Music music) {
+		try {
+			Sequence sequence = new Sequence(music.getDivisionType(),music.getVite());
 			ArrayList<ArrayList<note>> notes = music.getNotes();
 			for(int i=0;i<notes.size();i++) {
 				ArrayList<note> track = notes.get(i);
 				Track s = sequence.createTrack();
 				for(int j=0;j<track.size();j++) {
 					note n = track.get(j);
-					ShortMessage noteOnMsg = new ShortMessage();
-					noteOnMsg.setMessage(n.getAction(),n.getChannel() , n.getInstrument(), n.getHauteur());
-					s.add(new MidiEvent(noteOnMsg,n.getTime()));
+					if(n.getType()) {
+						MetaMessage m = new MetaMessage();
+						m.setMessage(n.getAction(), n.getData(), n.getData().length);
+						s.add(new MidiEvent(m,n.getTime()));
+					}
+					else{ShortMessage shMsg = new ShortMessage();
+					shMsg.setMessage(n.getAction(),n.getChannel() ,n.getHauteur(),n.getPuissance());
+					s.add(new MidiEvent(shMsg,n.getTime()));
+					}
 				}
 			}
-			
-			
+	
 	        sequencer.open(); 
 	        sequencer.setSequence(sequence);
 			sequencer.start();
@@ -143,7 +188,30 @@ public class ParseMidi {
 			e.printStackTrace();
 		}
 	}
-	
+	public void changeInstrument(int instrument) {
+		try {
+			sequencer.stop();
+			Sequence q = sequencer.getSequence();
+			Track[] tracks = q.getTracks();
+			System.out.println(tracks.length);
+			for(Track t:tracks) {
+				for(int i=0;i<t.size();i++) {
+					if(t.get(i).getMessage() instanceof ShortMessage) {
+						ShortMessage ms = (ShortMessage)t.get(i).getMessage();	
+						if(ms.getCommand() == ShortMessage.PROGRAM_CHANGE) {
+							ms.setMessage(ms.getCommand(), ms.getChannel(), instrument, ms.getData2());
+						}
+					}
+				}
+			}
+			
+			long tick = sequencer.getTickPosition();
+			sequencer.setTickPosition(tick);
+			sequencer.start();
+		} catch (InvalidMidiDataException e) {
+			e.printStackTrace();
+		}
+	}
 	public void changeVite(int viteRate) {
 		try {
 			sequencer.stop();
@@ -232,15 +300,15 @@ public class ParseMidi {
 	public static void main(String[] args) {
 		ParseMidi m = new ParseMidi();
 		
-		Music music = m.ParseMusic("music/baga01.mid");
+		Music music = m.ParseMusic("music/monk.mid");
 		music.setViteRate(1);
-		m.playMidi(music);
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {   
-		    public void run() {   
-		    	m.changeVite(3);
-		    }   
-		},10000  );
+		m.playMusic(music);
+		Scanner s = new Scanner(System.in);
+		while(true) {
+			String str = s.nextLine();
+			
+			m.changeInstrument(Integer.valueOf(str));
+		}
 	}
 	
 
