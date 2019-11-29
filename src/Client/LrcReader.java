@@ -45,17 +45,7 @@ public class LrcReader {
 			myFrame.removeDocument(myFrame.length()-rest-1,1);
 			myFrame.insertDocument(r, Color.green, myFrame.length()-rest);
 		}
-		
-//		int end = myFrame.length();
-//		myFrame.removeDocument(end-text.length()-1,text.length()+1);
-//		
-//		int position = (int) ((pos-start)*text.length()/dure);
-//		
-//		String readtext = text.substring(0,position);
-//		String resttext = text.substring(position);
-//		myFrame.insertDocument(readtext, Color.green, myFrame.length());
-//		myFrame.insertDocument(resttext+"\n", Color.gray, myFrame.length());
-			
+				
 	}
 	
 	

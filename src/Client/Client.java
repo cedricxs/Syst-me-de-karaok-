@@ -13,38 +13,39 @@ import Resource.Request;
 import Resource.Response;
 
 public class Client{
-	//与服务器通信的客户端
+	//connector communique avec serveur
 	Connector connexion;
 	MyPlayer player;
 	ArrayList<Music> musics;
-	//Frame mainFrame;
+	//console pour rentrer les commandes
 	Scanner console;
+	LrcReader lrcReader;
 	
 	public Client() {
 		try {
+			//connecter avec serveur
 			connexion = new ConnectorClient(new Socket("127.0.0.1",8888),this);
 			InitClient();
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			System.out.println("服务器IP地址错误...");
+			System.out.println("IP de serveur incorrecte...");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("连接服务器失败...");
+			System.out.println("connexion échouée avec serveur...");
 			System.exit(0);
 		}
 	}
 	
+	//initialiser le client
 	public void InitClient(){
 			player = new MyPlayer();
 			musics = new ArrayList<Music>();
-			//mainFrame = new Frame();
 			console = new Scanner(System.in);
+			lrcReader = new LrcReader();
 	}
 	
 	
 	public void start() {
 		new Thread(connexion).start();
-		//mainFrame.lanchFrame();
+		//envoie la requete d'usage
 		while(true) {
 			String content = console.nextLine();
 			Data req = parseRequest(content);
@@ -56,19 +57,16 @@ public class Client{
 	
 	public void playMusic(Music music) {
 		player.playMusic(music);
+		lrcReader.run(music);
 	}
 	
-	public void playMp3(String  music) {
-		player.playMp3(music);
-	}
-
 	
 	public void service(Data data) {
 		try {
 			// TODO Auto-generated method stub
 			parseResponse(data);
 		}catch(Exception e) {
-			System.out.println("解析响应失败...");
+			System.out.println("parse réponde échoué...");
 		}
 	}
 	
@@ -82,10 +80,6 @@ public class Client{
 		Request req;
 		if(content.indexOf("show")!=-1){ 
 			req = new Request("show");
-		}
-		else if(content.indexOf("ajouter")!=-1){
-			req = new Request("ajouter");
-			req.setContent(new Music("MyMusic"));
 		}
 		else if(content.indexOf("changeVite")!=-1) {
 			player.changeVite(2);
@@ -106,18 +100,8 @@ public class Client{
 			return;
 		}
 		else {
-//			@SuppressWarnings("unchecked")
-//			Map<String,byte[]> result = (HashMap<String,byte[]>)res.getContent();
-//			byte[] m = result.get("music");
-//			byte[] l = result.get("lrc");
-//			WriteToFile.write(m, "client/"+res.getName()+".mp3");
-//			WriteToFile.write(l, "client/"+res.getName()+".lrc");
-//			//Music m = (Music)res.getContent();
-//			//musics.add(m);	
-//			playMp3(res.getName());
 			Music music = (Music)res.getContent();
-			System.out.println(music.getVite());
-			//playMusic(music);
+			playMusic(music);
 			musics.add(music);
 		}
 	}

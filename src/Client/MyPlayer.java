@@ -55,7 +55,7 @@ public class MyPlayer{
 	public static void main(String[] args) {
 		MyPlayer p = new MyPlayer();
 		//p.playMp3("芒种");
-		Music music = ParseMidi.ParseMusic("music/RanMa.mid");
+		Music music = ParseMidi.ParseMusic("music/feeling.mid");
 		p.playMusic(music);
 		Scanner s = new Scanner(System.in);
 		while(true) {

@@ -21,7 +21,7 @@ public class Music implements Serializable{
 	int vite;
 	float divisionType;
 	private ArrayList<ArrayList<note>> notes;
-	//private ArrayList<parole> paroles;
+	private ArrayList<parole> paroles;
 	
 	public Music(String name) {
 		// TODO Auto-generated constructor stub

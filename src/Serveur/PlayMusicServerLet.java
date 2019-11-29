@@ -22,27 +22,18 @@ import Resource.Response;
 public class PlayMusicServerLet implements ServerLet{
 
 	private String name;
-	@SuppressWarnings("unused")
-	private Map<String,Object> serverLetContextes;
 	
 	public PlayMusicServerLet(String name) {
 		// TODO Auto-generated constructor stub
 		this.name = name;
 	}
-	
-	public void setContextes(Map<String,Object> serverLetContextes) {
-		this.serverLetContextes = serverLetContextes;
-	}
+
 
 	@Override
 	public void service(Request req, Response res) {
-	
 			// TODO Auto-generated method stub
 			String name = (String)req.getContent();
 			res.setName(name);
-			//ArrayList<Music> musics = (ArrayList<Music>)serverLetContextes.get("musics");
-			//for(Music music:musics) {
-				//if(music.getName().equals(req.getContent())) {
 					Music m = ParseMusic("music/"+name+".mid");
 					if(m==null) {
 						res.setStatus(404);
@@ -52,17 +43,6 @@ public class PlayMusicServerLet implements ServerLet{
 						res.setStatus(200);
 						res.setContent(m);
 					}
-//					//res.setContent(music);
-//					Map<String,byte[]> result = new HashMap<String,byte[]>();
-//					byte[] m = ReadFromFile.readFileByBytes("music/"+(String)req.getContent()+".mp3");
-//					byte[] l = ReadFromFile.readFileByBytes("music/"+(String)req.getContent()+".lrc");
-//					result.put("music", m);
-//					result.put("lrc",l);
-//					res.setContent(result);	
-//					res.setStatus(200);
-//					break;
-//				}
-//			}
 			
 	}
 

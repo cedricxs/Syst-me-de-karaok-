@@ -11,8 +11,6 @@ import Resource.Response;
 public class ShowAllMusicServerLet implements ServerLet{
 
 	String name;
-	private Map<String,Object> serverLetContextes;
-	
 	public ShowAllMusicServerLet(String name) {
 		// TODO Auto-generated constructor stub
 		this.name = name;
@@ -37,10 +35,5 @@ public class ShowAllMusicServerLet implements ServerLet{
 		res.setContent(result);
 	}
 
-	@Override
-	public void setContextes(Map<String, Object> serverLetContextes) {
-		// TODO Auto-generated method stub
-		this.serverLetContextes = serverLetContextes;
-	}
 
 }

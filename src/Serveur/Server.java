@@ -20,21 +20,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-/**
- * 实现点对点通信，服务器只负责监听客户端链接请求和发送链接请求
- * 真正的通信流是客户端之间建立的
- * @author cedricxs
- *
- */
 
 
 public class Server {
 	ServerSocket server = null;
 	BufferedWriter file =null;
 
-	//客户端通信池
+	//les connexion avec les clients
 	ArrayList<Connector>clients = null;
-	ArrayList<ServerLet> serverLets;
+	
+	ArrayList<ServLet> serverLets;
 	ArrayList<Music> musics;
 	Map<String,Object> serverLetContextes;
 	
@@ -55,19 +50,13 @@ public class Server {
 			musics = new ArrayList<Music>();
 			musics.add(new Music("When you're gone"));
 			serverLets = new ArrayList<ServerLet>();
-			serverLetContextes = new HashMap<String,Object>();
-			serverLetContextes.put("server", server);
-			serverLetContextes.put("file", file);
-			serverLetContextes.put("clients",clients);
-			serverLetContextes.put("serverLets",serverLets);
-			serverLetContextes.put("musics",musics);
 			addServerLet(new PlayMusicServerLet("play"));
 			addServerLet(new TestServerLet("test"));
 			addServerLet(new ShowAllMusicServerLet("show"));
 			addServerLet(new TestServerLet("ajouter"));
 			
 		} catch (IOException e) {
-			System.out.println("端口已被占用...");
+			System.out.println("la porte déja utilisé...");
 			System.exit(0);
 		}
 		try {
@@ -124,7 +113,7 @@ public class Server {
 		Response res = new Response();
 		for(ServerLet s:serverLets) {
 			if(s.getName().equals(req.getCommande())) {
-				System.out.println("开始处理请求...");
+				System.out.println("Traitement de la requete...");
 				s.service(req, res);
 			}
 		}
