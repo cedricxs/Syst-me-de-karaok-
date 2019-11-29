@@ -30,9 +30,12 @@ public class TestServerLet implements ServerLet {
 		@SuppressWarnings("unchecked")
 		List<Music> musics = (List<Music>) serverLetContextes.get("musics");
 		musics.add((Music)req.getContent());
-		List<String> result = new ArrayList<String>();
+		String music;
+		int fois = 0;
 		for(Music m:musics) {
-			result.add(m.getName());
+			 if(m.fois>fois){
+				 m.getName() = music;
+			 }
 		}
 		res.setStatus(300);
 		res.setContent(result);

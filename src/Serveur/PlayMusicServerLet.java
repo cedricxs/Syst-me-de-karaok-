@@ -22,12 +22,21 @@ import Resource.Response;
 public class PlayMusicServerLet implements ServerLet{
 
 	private String name;
-	
+	Map<String,int> nb_played_music;
+	Map<String, int> nb_musics_user;
+
 	public PlayMusicServerLet(String name) {
 		// TODO Auto-generated constructor stub
 		this.name = name;
 	}
 
+	void setMusicStats(Map<String,int> nb_played_music){
+		this.nb_played_music = nb_played_music;
+	}
+
+	void setUserStats(Map<String,int> nb_music_user){
+		this.nb_music_user = nb_music_user;
+	}
 
 	@Override
 	public void service(Request req, Response res) {
@@ -40,6 +49,8 @@ public class PlayMusicServerLet implements ServerLet{
 						res.setContent("Not Found");
 					}
 					else {
+						int iterations = nb_played_music.get(name);
+						nb_played_music.put(name,++iterations);
 						res.setStatus(200);
 						res.setContent(m);
 					}

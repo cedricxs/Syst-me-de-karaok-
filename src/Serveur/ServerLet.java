@@ -8,5 +8,5 @@ import Resource.Response;
 public interface ServerLet {
 	String getName();
 	void service(Request req, Response res);
-	void setContextes(Map<String,Object> serverLetContextes);
+	void setMusicStats(Map<String,int> nb_played_music);
 }

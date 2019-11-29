@@ -28,11 +28,15 @@ public class Server {
 
 	//les connexion avec les clients
 	ArrayList<Connector>clients = null;
-	
+
 	ArrayList<ServLet> serverLets;
 	ArrayList<Music> musics;
 	Map<String,Object> serverLetContextes;
-	
+	//Nombre de fois dont les morceaux ont été joué
+	Map<String,int> nb_played_music;
+	//Nombre de musiques jouées par chaque utilisateur
+	ArrayList<String> users;
+	Map<String, int> nb_musics_user;
 	
 	public Server(int port,String FileName) {
 		InitServer(port,FileName);
@@ -49,6 +53,15 @@ public class Server {
 			clients = new ArrayList<Connector>();
 			musics = new ArrayList<Music>();
 			musics.add(new Music("When you're gone"));
+			nb_played_music = new HashMap<String,int>();
+			for (Music m:musics){
+				nb_played_music.put(m.getName(), 0);
+			}
+			users.add("Michel");
+			nb_musics_user = new HashMap<String, int>();
+			for (String u:users){
+				nb_musics_user.put(u, 0);
+			}
 			serverLets = new ArrayList<ServerLet>();
 			addServerLet(new PlayMusicServerLet("play"));
 			addServerLet(new TestServerLet("test"));
