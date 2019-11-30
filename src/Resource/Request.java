@@ -10,9 +10,16 @@ public class Request implements Data{
 
 	String commande;
 	Object content;
+	String utilisateur;
 	public Request(String commande) {
 		// TODO Auto-generated constructor stub
 		this.commande = commande;
+	}
+	public void setUtilisateur(String utilisateur) {
+		this.utilisateur = utilisateur;
+	}
+	public String getUtilisateur() {
+		return this.utilisateur;
 	}
 	public void setCommande(String commande) {
 		this.commande = commande;

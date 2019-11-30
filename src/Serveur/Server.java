@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import Music.Music;
 import Resource.ConnectorServer;
 import Resource.Connector;
 import Resource.Data;
@@ -29,45 +27,51 @@ public class Server {
 	//les connexion avec les clients
 	ArrayList<Connector>clients = null;
 
-	ArrayList<ServLet> serverLets;
-	ArrayList<Music> musics;
-	Map<String,Object> serverLetContextes;
-	//Nombre de fois dont les morceaux ont été joué
-	Map<String,int> nb_played_music;
+	ArrayList<Servlet> servlets;
+	ArrayList<String> musics;
+	Map<String,Object> servletContexte;
 	//Nombre de musiques jouées par chaque utilisateur
-	ArrayList<String> users;
-	Map<String, int> nb_musics_user;
+	Map<String,ArrayList<String>> music_user;
+	Map<String,Integer> nb_joue;
 	
 	public Server(int port,String FileName) {
 		InitServer(port,FileName);
 	}
 	
-	private void addServerLet(ServerLet s) {
-		serverLets.add(s);
-		s.setContextes(serverLetContextes);
+	private void addServlet(Servlet s) {
+		servlets.add(s);
+		s.setServletContexte(servletContexte);
 	}
 	
+	public void InitMusics() {
+		musics = new ArrayList<String>();
+		music_user = new HashMap<String, ArrayList<String>>(); 
+		nb_joue = new HashMap<String,Integer>();
+		String path = "music/music/";
+		File musicsDir = new File(path);
+		if(musicsDir.isDirectory()) {
+			String[] musicsAll = musicsDir.list();
+			for(String musicName:musicsAll) {
+				String music = musicName.substring(0,musicName.indexOf(".mid"));
+				musics.add(music);
+				music_user.put(music, new ArrayList<String>());
+				nb_joue.put(music,0);
+			}
+		}
+	}
 	public void InitServer(int port,String FileName) {
 		try {
 			server = new ServerSocket(port);
 			clients = new ArrayList<Connector>();
-			musics = new ArrayList<Music>();
-			musics.add(new Music("When you're gone"));
-			nb_played_music = new HashMap<String,int>();
-			for (Music m:musics){
-				nb_played_music.put(m.getName(), 0);
-			}
-			users.add("Michel");
-			nb_musics_user = new HashMap<String, int>();
-			for (String u:users){
-				nb_musics_user.put(u, 0);
-			}
-			serverLets = new ArrayList<ServerLet>();
-			addServerLet(new PlayMusicServerLet("play"));
-			addServerLet(new TestServerLet("test"));
-			addServerLet(new ShowAllMusicServerLet("show"));
-			addServerLet(new TestServerLet("ajouter"));
-			
+			InitMusics();		
+			servletContexte = new HashMap<String, Object>();
+			servlets = new ArrayList<Servlet>();
+			addServlet(new PlayMusicServlet("play"));
+			addServlet(new ShowStatistique("statistique"));
+			addServlet(new ShowAllMusicServlet("show"));
+			servletContexte.put("nb_joue",nb_joue);
+			servletContexte.put("music_user",music_user);
+			servletContexte.put("musics",musics);
 		} catch (IOException e) {
 			System.out.println("la porte déja utilisé...");
 			System.exit(0);
@@ -85,10 +89,6 @@ public class Server {
 	
 	public void start() {
 		while(true) {
-			//main线程为服务器主线程
-			//通信模式由客户端决定,因为是客户端与服务器建立连接
-			//客户端决定建立连接之后直接运行完程序，则通信管道Socket直接失效
-			//可分为持续链接和非持续链接状态,可参照HTTP请求/响应头的connect:alive
 			Socket socket;
 			try {
 				socket = server.accept();
@@ -124,7 +124,7 @@ public class Server {
 		// TODO Auto-generated method stub
 		Request req = (Request)data;
 		Response res = new Response();
-		for(ServerLet s:serverLets) {
+		for(Servlet s:servlets) {
 			if(s.getName().equals(req.getCommande())) {
 				System.out.println("Traitement de la requete...");
 				s.service(req, res);

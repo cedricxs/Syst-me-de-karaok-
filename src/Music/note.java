@@ -15,22 +15,13 @@ public class note implements Serializable{
 	int channel;
 	int action;
 	byte[] data;
-	boolean metaNote;
+	boolean isMetaNote;
 	//notes (avec leur durée, leur hauteur, et peut-être leur date)
-	public void setData(byte[] data) {
-		this.data = data;
-	}
 	public note(byte[] data,int type,long time) {
 		this.data = data;
 		this.action = type;
 		this.time = time;
-		metaNote = true;
-	}
-	public boolean getType() {
-		return metaNote;
-	}
-	public byte[] getData() {
-		return this.data;
+		isMetaNote = true;
 	}
 	public note(int action,int channel, int hauteur, int puissance,long time) {
 		// TODO Auto-generated constructor stub
@@ -39,6 +30,13 @@ public class note implements Serializable{
 		this.puissance = puissance;
 		this.hauteur = hauteur;
 		this.time = time;
+		isMetaNote = false;
+	}
+	public boolean isMetaNote() {
+		return isMetaNote;
+	}
+	public byte[] getData() {
+		return this.data;
 	}
 	
 	public void setDure(long dure) {
