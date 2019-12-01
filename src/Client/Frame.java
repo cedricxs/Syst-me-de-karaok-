@@ -20,6 +20,7 @@ public class Frame extends JFrame {
 		jtp = new JTextPane();
 		JScrollPane ScrollPane = new JScrollPane(jtp);
 		container.add(ScrollPane);
+		//addCloseListenser();
 	}
 	public int length() {
 		return jtp.getStyledDocument().getLength();
@@ -48,19 +49,19 @@ public class Frame extends JFrame {
 		try {
 			doc.remove(0,doc.getLength());
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	public void insertDocument(String text , Color textColor,int offset)//根据传入的颜色及文字，将文字插入文本域
+	//insert un texte avec couleur et offset dans le textPane
+	public void insertDocument(String text , Color textColor,int offset)
 	{
 		SimpleAttributeSet set = new SimpleAttributeSet();
-		StyleConstants.setForeground(set, textColor);//设置文字颜色
-		StyleConstants.setFontSize(set, 12);//设置字体大小
+		StyleConstants.setForeground(set, textColor);//assigne couleur
+		StyleConstants.setFontSize(set, 12);//assigne pointure
 		Document doc = jtp.getStyledDocument();
 		try
 		{
-			doc.insertString(offset, text, set);//插入文字
+			doc.insertString(offset, text, set);//insert le texte
 		}
 		catch (BadLocationException e)
 		{

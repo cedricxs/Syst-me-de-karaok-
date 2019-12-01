@@ -17,7 +17,6 @@ public class Client{
 	//connector communique avec serveur
 	Connector connexion;
 	MyPlayer player;
-	ArrayList<Music> musics;
 	//console pour rentrer les commandes
 	Scanner console;
 	String utilisateur;
@@ -40,8 +39,8 @@ public class Client{
 	//initialiser le client
 	public void InitClient(){
 			player = new MyPlayer();
-			musics = new ArrayList<Music>();
 			console = new Scanner(System.in);
+			//envoie un requete pour statistique
 			Request req = new Request("statistique");
 			req.setUtilisateur(utilisateur);
 			connexion.send(req);
@@ -50,11 +49,12 @@ public class Client{
 	
 	public void start() {
 		new Thread(connexion).start();
-		//envoie la requete d'usage
 		while(true) {
+			//obtient un String depuis console et le parse devient requete
 			String content = console.nextLine();
 			Data req = parseRequest(content);
 			if(req!=null) {
+				//l'envoie a serveur
 				connexion.send(req);				
 			}
 		}
@@ -67,7 +67,6 @@ public class Client{
 	
 	public void service(Data data) {
 		try {
-			// TODO Auto-generated method stub
 			parseResponse(data);
 		}catch(Exception e) {
 			System.out.println("parse réponde échoué...");
@@ -75,18 +74,18 @@ public class Client{
 	}
 	
 	Data parseRequest(String content) {
-		for(Music m:musics) {
-			if(m.getName().equals(content)) {
-				playMusic(m);
-				return null;
-			}
-		}
 		Request req;
 		if(content.indexOf("show")!=-1){ 
 			req = new Request("show");
 		}
-		else if(content.indexOf("changeVite")!=-1) {
-			player.changeVite(2);
+		else if(content.indexOf("cv")!=-1) {
+			float rate = Float.valueOf(content.split(":")[1]);
+			player.changeVite(rate);
+			return null;
+		}
+		else if(content.indexOf("ch")!=-1) {
+			int hauteur = Integer.valueOf(content.split(":")[1]);
+			player.changeHauteur(hauteur);
 			return null;
 		}
 		else{
@@ -97,10 +96,15 @@ public class Client{
 		return req;
 	}
 
+	//parse un reponde
+	/*reponde.status:300->showAllMusic
+					 404->No such Music
+					 200->Ok
+					 100->Statistique
+	*/
 	@SuppressWarnings("unchecked")
 	void parseResponse(Data data) {
 		Response res = (Response)data;
-		System.out.println(res.getStatus());
 		if(res.getStatus()==300 | res.getStatus()==404) {
 			System.out.println(res.getContent());
 			return;
@@ -110,16 +114,16 @@ public class Client{
 			String music = (String) result.get("music");
 			int nb = (int) result.get("nb");
 			ArrayList<String> users = (ArrayList<String>) result.get("users");
-			System.out.println(music);
-			System.out.println(nb);
+			System.out.println("Le plus joué : "+music);
+			System.out.println("nombre de joué : "+nb);
+			System.out.println("Les utilisateurs qui le joué :");
 			for(String user:users) {
-				System.out.println(user);
+				System.out.println("\t"+user);
 			}
 		}
 		else {
 			Music music = (Music)res.getContent();
 			playMusic(music);
-			musics.add(music);
 		}
 	}
 }

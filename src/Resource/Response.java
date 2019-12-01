@@ -2,16 +2,11 @@ package Resource;
 
 public class Response implements Data{
 
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Object content;
 	int status;
 	private String name;
 	public Response() {
-		// TODO Auto-generated constructor stub
 	}
 	public void setName(String name) {
 		this.name = name;
@@ -32,7 +27,6 @@ public class Response implements Data{
 	}
 	@Override
 	public Object getContent() {
-		// TODO Auto-generated method stub
 		return this.content;
 	}
 

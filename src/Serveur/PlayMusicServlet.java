@@ -31,7 +31,6 @@ public class PlayMusicServlet implements Servlet{
 	private Map<String,Object> servletContexte;
 
 	public PlayMusicServlet(String name) {
-		// TODO Auto-generated constructor stub
 		this.name = name;
 	}
 
@@ -66,7 +65,6 @@ public class PlayMusicServlet implements Servlet{
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return this.name;
 	}
 	
@@ -120,11 +118,12 @@ public class PlayMusicServlet implements Servlet{
 	}
 	
 	/**
-     * 解析LRC歌词文件
+     * parse fichier de .lrc
      * 
-     * @param path
-     *            lrc文件路径
-     * @return
+     * @param String musicName
+     * 		  Music music: enregistre les paroles apres parser
+     *            
+     * @return le etat de parser
      */
     private boolean parseParoles(String musicName, Music music) {
         ArrayList<parole> paroles = music.getParoles();

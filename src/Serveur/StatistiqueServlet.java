@@ -8,12 +8,12 @@ import java.util.Set;
 import Resource.Request;
 import Resource.Response;
 
-public class ShowStatistique implements Servlet {
+public class StatistiqueServlet implements Servlet {
 
 	private String name;
 	private Map<String,Object> servletContexte;
 	
-	public ShowStatistique(String name) {
+	public StatistiqueServlet(String name) {
 		// TODO Auto-generated constructor stub
 		this.name = name;
 	}
@@ -27,7 +27,6 @@ public class ShowStatistique implements Servlet {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void service(Request req, Response res) {
-		// TODO Auto-generated method stub
 		Map<String,Integer> nb_joue = (Map<String, Integer>) servletContexte.get("nb_joue");
 		Map<String,ArrayList<String>> music_user = (Map<String, ArrayList<String>>) servletContexte.get("music_user");
 		int max = 0;

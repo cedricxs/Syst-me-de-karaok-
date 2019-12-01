@@ -15,7 +15,6 @@ public class parole implements Serializable{
 	long duree;
 	String text;
 	public parole(long time,String text) {
-		// TODO Auto-generated constructor stub
 		this.time = time;
 		this.text = text;
 	}
@@ -32,7 +31,6 @@ public class parole implements Serializable{
 		return this.time;
 	}
 	public String getText() {
-		// TODO Auto-generated method stub
 		return this.text;
 	}
 	public long getDuree() {

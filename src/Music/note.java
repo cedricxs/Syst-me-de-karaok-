@@ -35,12 +35,11 @@ public class note implements Serializable{
 	public boolean isMetaNote() {
 		return isMetaNote;
 	}
-	public byte[] getData() {
-		return this.data;
-	}
-	
 	public void setDure(long dure) {
 		this.dure = dure;
+	}
+	public byte[] getData() {
+		return this.data;
 	}
 	public long getDure() {
 		return this.dure;

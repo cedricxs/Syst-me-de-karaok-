@@ -1,7 +1,6 @@
 package Serveur;
 
 import java.util.Map;
-
 import Resource.Request;
 import Resource.Response;
 

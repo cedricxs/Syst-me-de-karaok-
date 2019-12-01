@@ -39,12 +39,10 @@ public abstract class Connector implements Runnable{
 		}
 	}
 	public Data receive() {
-		// TODO Auto-generated method stub
 		try {
 			Data data = (Data)in.readObject();
 			return data;
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
 			System.out.println("recu les données échoué...");
 			isRunning = false;
 			close();
@@ -52,14 +50,12 @@ public abstract class Connector implements Runnable{
 		return null;
 	}
 	public void send(Data data) {
-		// TODO Auto-generated method stub
 		try {
 			out.writeObject(data);
 			out.flush();
-			System.out.println("请求已发送...");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.out.println("请求发送失败...");
+			System.out.println("evoie les données échoué...");
 			isRunning = false;
 			close();
 		}
@@ -69,7 +65,6 @@ public abstract class Connector implements Runnable{
 		try {
 			connexion.close();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}

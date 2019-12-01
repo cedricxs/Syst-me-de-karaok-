@@ -3,16 +3,12 @@ package Resource;
 
 public class Request implements Data{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	String commande;
 	Object content;
 	String utilisateur;
 	public Request(String commande) {
-		// TODO Auto-generated constructor stub
 		this.commande = commande;
 	}
 	public void setUtilisateur(String utilisateur) {

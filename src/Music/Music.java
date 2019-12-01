@@ -14,7 +14,6 @@ public class Music implements Serializable{
 	private ArrayList<parole> paroles;
 	int vitesse; 
 	public Music(String name) {
-		// TODO Auto-generated constructor stub
 		this.name = name;
 		notes = new ArrayList<ArrayList<note>>();
 		paroles = new ArrayList<parole>();

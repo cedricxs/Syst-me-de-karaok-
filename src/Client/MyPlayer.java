@@ -7,19 +7,9 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MetaMessage;
-import javax.sound.midi.MidiEvent;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Sequence;
-import javax.sound.midi.Sequencer;
-import javax.sound.midi.ShortMessage;
-import javax.sound.midi.Track;
+import javax.sound.midi.*;
 
-import Music.Music;
-import Music.note;
-import Music.parole;
+import Music.*;
 
 public class MyPlayer{
 
@@ -41,13 +31,6 @@ public class MyPlayer{
 		}
 	}
 	
-	public void changeVite(float viteRate) {
-		this.viteRate = viteRate;
-		sequencer.stop();
-		sequencer.setTempoFactor(viteRate);
-		sequencer.start();
-	}
-	
 	public void playMusic(Music music) {
 		if(paroleFrame!=null) {
 			paroleFrame.clear();
@@ -63,7 +46,6 @@ public class MyPlayer{
 		playParoles(music);
 		playNotes(music);
 	}
-	
 	public void playParoles(Music music) {
 		ArrayList<parole> paroles = music.getParoles();
 		paroleFrame.lanchFrame();
@@ -137,8 +119,14 @@ public class MyPlayer{
 		}
 	}
 
-
-    public void changeHauteur() {
+    public void changeVite(float viteRate) {
+		this.viteRate = viteRate;
+		sequencer.stop();
+		sequencer.setTempoFactor(viteRate);
+		sequencer.start();
+	}
+    
+    public void changeHauteur(int ecart) {
 		try {
 			sequencer.stop();
 			Sequence q = sequencer.getSequence();
@@ -147,7 +135,7 @@ public class MyPlayer{
 				for(int i=0;i<t.size();i++) {
 					if(t.get(i).getMessage() instanceof ShortMessage) {
 						ShortMessage ms = (ShortMessage)t.get(i).getMessage();					
-						ms.setMessage(ms.getCommand(), ms.getChannel(), ms.getData1(), ms.getData2()-10>0?ms.getData2()-10:0);
+						ms.setMessage(ms.getCommand(), ms.getChannel(), ms.getData1(), ms.getData2()-ecart>0?ms.getData2()-ecart:0);
 					}
 				}
 			}

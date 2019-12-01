@@ -6,11 +6,9 @@ import Client.Client;
 
 public class ConnectorClient extends Connector{
 
-	
 	Client handler;
 	
 	public ConnectorClient(Socket connexion, Client handler) {
-		// TODO Auto-generated constructor stub
 		super(connexion);
 		this.handler = handler;
 	}
