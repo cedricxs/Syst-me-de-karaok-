@@ -2,6 +2,8 @@ package Client;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,10 +31,14 @@ public class MyPlayer{
 	int current;
 	Frame paroleFrame;
 	float viteRate;
-	
+	Map<Integer,String> Type_parole;
 	public MyPlayer() {
 		try {
 			sequencer = MidiSystem.getSequencer();
+			Type_parole = new HashMap<Integer, String>();
+			Type_parole.put(0,"trémolo");
+			Type_parole.put(1,"crié");
+			Type_parole.put(2,"portamento");
 		} catch (MidiUnavailableException e) {
 		}
 	}
@@ -79,7 +85,8 @@ public class MyPlayer{
 	public void playParoles(Music music) {
 		ArrayList<parole> paroles = music.getParoles();
 		paroleFrame.lanchFrame();
-		paroleFrame.insertDocument(paroles.get(current).getText()+"\n", Color.GRAY,0);
+		paroleFrame.insertDocument(Type_parole.get(paroles.get(current).getType())+":", Color.green,0);
+		paroleFrame.insertDocument(paroles.get(current).getText()+"\n", Color.GRAY,paroleFrame.length());
 		timer.scheduleAtFixedRate(new TimerTask() {   
 		    public void run() { 
 		    	time+=viteRate;
@@ -91,6 +98,7 @@ public class MyPlayer{
 		    		}else {
 		    			current++;			    		
 		    			p = paroles.get(current);
+		    			paroleFrame.insertDocument(Type_parole.get(paroles.get(current).getType())+":", Color.green,paroleFrame.length());
 		    			paroleFrame.insertDocument(p.getText()+"\n", Color.GRAY,paroleFrame.length());			    		
 		    		}
 		    	}

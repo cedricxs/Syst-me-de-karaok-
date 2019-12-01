@@ -25,6 +25,9 @@ public class parole implements Serializable{
 	public void setType(int type) {
 		this.type = type;
 	}
+	public int getType() {
+		return this.type;
+	}
 	public long getTime() {
 		return this.time;
 	}

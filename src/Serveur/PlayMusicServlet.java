@@ -140,6 +140,7 @@ public class PlayMusicServlet implements Servlet{
                 String regex = "\\[(\\d{1,2}):(\\d{1,2}).(\\d{1,2})\\]"; // 正则表达式
                 Pattern pattern = Pattern.compile(regex); // 创建 Pattern 对象
                 String lineStr = null; // 每次读取一行字符串
+                int i=0;
                 while ((lineStr = bufferedReader.readLine()) != null) {
                     Matcher matcher = pattern.matcher(lineStr);
                     while (matcher.find()) {
@@ -156,7 +157,9 @@ public class PlayMusicServlet implements Servlet{
                         	parole last = paroles.get(paroles.size()-1);
                         	last.setDuree(time-last.getTime());
                         }
-                        paroles.add(new parole(time,text));
+                        parole p = new parole(time,text);
+                        p.setType(i++%3);
+                        paroles.add(p);  
                     }
                 }
                 parole last = paroles.get(paroles.size()-1);
