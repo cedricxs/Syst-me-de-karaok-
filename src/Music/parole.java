@@ -8,7 +8,7 @@ public class parole implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	//type:1->homme,2->femme,3->choeurs
+	//type:0->trémolo,1->crié,2->portamento
 	int type;
 	//les positions de lyrics de ce parole dois chante
 	long time;

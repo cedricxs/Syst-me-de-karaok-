@@ -3,8 +3,6 @@ package Client;
 
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Graphics;
-import java.awt.Image;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -15,38 +13,40 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 public class Frame extends JFrame {
-	JTextPane j;
+	JTextPane jtp;
 	Frame(){
 		super();
 		Container container = this.getContentPane();
-		//container.setLayout(new GridLayout(1,1));
-		j = new JTextPane();
-		JScrollPane ScrollPane = new JScrollPane(j);
-		//JPanel contPane = new JPanel();
-		//contPane.add(ScrollPane);
+		jtp = new JTextPane();
+		JScrollPane ScrollPane = new JScrollPane(jtp);
 		container.add(ScrollPane);
-		//addCloseListenser();
-		//insertDocument("Blue text", Color.BLUE);
 	}
 	public int length() {
-		return j.getStyledDocument().getLength();
+		return jtp.getStyledDocument().getLength();
 	}
 	
 	public String getDocument(int offset, int length) {
-		Document doc = j.getStyledDocument();
+		Document doc = jtp.getStyledDocument();
 		try {
 			return doc.getText(offset, length);
 			
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
 	}
 	public void removeDocument(int offset, int length) {
-		Document doc = j.getStyledDocument();
+		Document doc = jtp.getStyledDocument();
 		try {
 			doc.remove(offset, length);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+	}
+	public void clear() {
+		Document doc = jtp.getStyledDocument();
+		try {
+			doc.remove(0,doc.getLength());
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -57,7 +57,7 @@ public class Frame extends JFrame {
 		SimpleAttributeSet set = new SimpleAttributeSet();
 		StyleConstants.setForeground(set, textColor);//设置文字颜色
 		StyleConstants.setFontSize(set, 12);//设置字体大小
-		Document doc = j.getStyledDocument();
+		Document doc = jtp.getStyledDocument();
 		try
 		{
 			doc.insertString(offset, text, set);//插入文字
@@ -69,11 +69,6 @@ public class Frame extends JFrame {
 	
 	void addCloseListenser() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		addWindowListener(new WindowAdapter(){
-//			public void windowClosing(WindowEvent e) {
-//				System.exit(0);
-//			}
-//		});
 	}
 	void lanchFrame() {
 		setSize(600,400);
@@ -81,25 +76,12 @@ public class Frame extends JFrame {
 		setVisible(true);
 	}
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	public static void main(String[] args) {
 		Frame f = new Frame();
 		f.lanchFrame();
 		
 	}
-	private Image offScreenImage;  //图形缓存
-	@Override
-	  public void update(Graphics g)
-	  {
-	         if(offScreenImage == null)
-	            offScreenImage = this.createImage(500, 500);     //新建一个图像缓存空间,这里图像大小为800*600
-	            Graphics gImage = offScreenImage.getGraphics();  //把它的画笔拿过来,给gImage保存着
-	            paint(gImage);                                   //将要画的东西画到图像缓存空间去
-	            g.drawImage(offScreenImage, 0, 0, null);         //然后一次性显示出来
-	  }
 
 
 

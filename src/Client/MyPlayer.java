@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,7 +20,6 @@ import javax.sound.midi.Track;
 import Music.Music;
 import Music.note;
 import Music.parole;
-import Serveur.PlayMusicServlet;
 
 public class MyPlayer{
 
@@ -39,7 +37,7 @@ public class MyPlayer{
 			Type_parole.put(0,"trémolo");
 			Type_parole.put(1,"crié");
 			Type_parole.put(2,"portamento");
-		} catch (MidiUnavailableException e) {
+		} catch (Exception e) {
 		}
 	}
 	
@@ -47,36 +45,20 @@ public class MyPlayer{
 		this.viteRate = viteRate;
 		sequencer.stop();
 		sequencer.setTempoFactor(viteRate);
-//		long tick= sequencer.getTickPosition();
-//		sequencer.setTickPosition(tick);
 		sequencer.start();
-	}
-	
-	
-	public static void main(String[] args) {
-		MyPlayer p = new MyPlayer();
-		PlayMusicServlet l = new PlayMusicServlet("");
-		Music music = l.parseMusic("baga01");
-		p.playMusic(music);
-		@SuppressWarnings("resource")
-		Scanner s = new Scanner(System.in);
-		while(true) {
-			String c = s.nextLine();
-			if(c.equals("cv")) {
-			p.changeVite((float) (2*p.viteRate));
-			}else if(c.equals("ch")){
-				p.changeHauteur();
-			}
-		}
 	}
 	
 	public void playMusic(Music music) {
 		if(paroleFrame!=null) {
-			paroleFrame.dispose();
+			paroleFrame.clear();
+			timer.cancel();
 		}
-		paroleFrame = new Frame();
+		else{	
+			paroleFrame = new Frame();
+		}
 		timer = new Timer();
 		viteRate = 1f;
+		time = 0f;
 		current = 0;
 		playParoles(music);
 		playNotes(music);
@@ -90,6 +72,7 @@ public class MyPlayer{
 		timer.scheduleAtFixedRate(new TimerTask() {   
 		    public void run() { 
 		    	time+=viteRate;
+		    	//System.out.println(time);
 		    	parole p = paroles.get(current);
 		    	if(time>p.getTime()+p.getDuree()) {
 		    		ChangeProcessus(p);
@@ -112,22 +95,16 @@ public class MyPlayer{
 		String text = p.getText();
 		long duree = p.getDuree();
 		int position;
-		if(time<start) {
-			return;
-		}
-		if(time>start+duree) {
-			position = text.length();
-		}
-		else {
-			position = (int) ((time-start)*text.length()/duree);
-		}
-			int rest = text.length()+1-position;
-			int last = (int) ((time-viteRate-start)*text.length()/duree);
-			if(position>last) {
-				String r = paroleFrame.getDocument(paroleFrame.length()-rest-1,1);
-				paroleFrame.removeDocument(paroleFrame.length()-rest-1,1);
-				paroleFrame.insertDocument(r, Color.green, paroleFrame.length()-rest);
-			}			
+		if(time<start) return;
+		if(time>start+duree) position = text.length();
+		else position = (int) ((time-start)*text.length()/duree);
+		int rest = text.length()+1-position;
+		int last = (int) ((time-viteRate-start)*text.length()/duree);
+		if(position>last) {
+			String r = paroleFrame.getDocument(paroleFrame.length()-rest-1,1);
+			paroleFrame.removeDocument(paroleFrame.length()-rest-1,1);
+			paroleFrame.insertDocument(r, Color.green, paroleFrame.length()-rest);
+		}			
 	}
     
     public void playNotes(Music music) {
@@ -150,14 +127,12 @@ public class MyPlayer{
 						s.add(new MidiEvent(shMsg,n.getTime()));
 					}
 				}
-			}
-	
+			}	
 	        sequencer.open(); 
 	        sequencer.setSequence(sequence);
 			sequencer.start();
 			
 		} catch (InvalidMidiDataException | MidiUnavailableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -180,13 +155,7 @@ public class MyPlayer{
 			sequencer.setTickPosition(tick);
 			sequencer.start();
 		} catch (InvalidMidiDataException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-    
-    
-    
-	
-	
+	}	
 }
