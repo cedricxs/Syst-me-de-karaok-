@@ -67,7 +67,7 @@ public class Server {
 			System.out.println("la porte déja utilisé...");
 			System.exit(0);
 		}
-		System.out.println("服务器已启动!!!");
+		System.out.println("serveur demarrer!!!");
 	}
 	
 	public void start() {
@@ -76,10 +76,10 @@ public class Server {
 			try {
 				socket = server.accept();
 				startChannel(socket);
-				System.out.println("有人连进来了");
+				System.out.println("has client come in");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				System.out.println("接受客户端出错...");
+				System.out.println("fail to get client...");
 			}
 			
 		}
@@ -89,7 +89,6 @@ public class Server {
 		Connector client = new ConnectorServer (socket,this);
 		new Thread(client).start();
 	}
-
 
 	public Data service(Data data) {
 		Request req = (Request)data;

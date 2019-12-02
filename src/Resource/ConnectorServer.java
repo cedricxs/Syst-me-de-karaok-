@@ -12,13 +12,12 @@ public class ConnectorServer extends Connector{
 		super(connexion);
 		this.handler = handler;
 	}
+
 	
 	@Override
 	public void service(Data data) {
 		Data result = handler.service(data);
 		send(result);
 	}
-
-
 
 }
