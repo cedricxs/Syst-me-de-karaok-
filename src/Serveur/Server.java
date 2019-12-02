@@ -24,8 +24,8 @@ public class Server {
 	Map<String,ArrayList<String>> music_user;
 	Map<String,Integer> nb_joue;
 	
-	public Server(int port,String FileName) {
-		InitServer(port,FileName);
+	public Server(int port) {
+		InitServer(port);
 	}
 	
 	private void addServlet(Servlet s) {
@@ -48,7 +48,7 @@ public class Server {
 			}
 		}
 	}
-	public void InitServer(int port,String FileName) {
+	public void InitServer(int port) {
 		try {
 			server = new ServerSocket(port);
 			musics = new ArrayList<String>();
