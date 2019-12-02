@@ -78,6 +78,15 @@ public class PlayMusicServlet implements Servlet{
 		}
 	}
 
+	/**
+	 * parse le fichier de .mid 
+	 * 
+	 * @param musicName: le nom de musique 
+	 * 
+	 * @param music: enregistre les notes apres parser
+	 * 
+	 * @return l'etat de parser : boolean
+	 */
 	public boolean parseNotes(String musicName, Music music) {
 		Sequence sequence;
 		String fileName = "music/music/"+musicName+".mid";
@@ -123,33 +132,32 @@ public class PlayMusicServlet implements Servlet{
      * @param String musicName
      * 		  Music music: enregistre les paroles apres parser
      *            
-     * @return le etat de parser
+     * @return l'etat de parser : boolean
      */
     private boolean parseParoles(String musicName, Music music) {
         ArrayList<parole> paroles = music.getParoles();
         String fileName = "music/lyric/"+musicName+".lrc";
         try {
-             String encoding = "utf-8"; // 字符编码，若与歌词文件编码不符将会出现乱码
+             String encoding = "utf-8"; // encoding correspendant le lyric fichier
             // String encoding = "GBK";
             File file = new File(fileName);
-            if (file.isFile() && file.exists()) { // 判断文件是否存在
+            if (file.isFile() && file.exists()) { // si le fichier existe
                 InputStreamReader read = new InputStreamReader(
                         new FileInputStream(file), encoding);
                 BufferedReader bufferedReader = new BufferedReader(read);
-                String regex = "\\[(\\d{1,2}):(\\d{1,2}).(\\d{1,2})\\]"; // 正则表达式
-                Pattern pattern = Pattern.compile(regex); // 创建 Pattern 对象
-                String lineStr = null; // 每次读取一行字符串
+                String regex = "\\[(\\d{1,2}):(\\d{1,2}).(\\d{1,2})\\]"; // reg
+                Pattern pattern = Pattern.compile(regex); // creer Pattern 
+                String lineStr = null; // lire un ligne chaque fois
                 int i=0;
                 while ((lineStr = bufferedReader.readLine()) != null) {
                     Matcher matcher = pattern.matcher(lineStr);
                     while (matcher.find()) {
-                        // System.out.println(m.group(0)); // 例：[02:34.94]
-                        // [02:34.94] ----对应---> [分钟:秒.毫秒]
-                        String min = matcher.group(1); // 分钟
-                        String sec = matcher.group(2); // 秒
-                        String mill = matcher.group(3); // 毫秒，注意这里其实还要乘以10
+                        // [02:34.94] ----correspendant---> [min:sec.millsec]
+                        String min = matcher.group(1); // min
+                        String sec = matcher.group(2); // sec
+                        String mill = matcher.group(3); // millsec, il faut mutifier 10
                         long time = getLongTime(min, sec, mill + "0");
-                        // 获取当前时间的歌词信息
+                        // obtenir le parole pour le moment
                         String text = lineStr.substring(matcher.end());
                         
                         if(!paroles.isEmpty()) {
@@ -164,41 +172,39 @@ public class PlayMusicServlet implements Servlet{
                 parole last = paroles.get(paroles.size()-1);
             	last.setDuree(10);
                 read.close();
-                System.out.println("解析完成。。。");
+                System.out.println("parse fini。。。");
                 return true;
             } else {
-                System.out.println("找不到指定的文件:" + fileName);
+                System.out.println("echoue de trouver ce fichier:" + fileName);
                 return false;
             }
         } catch (Exception e) {
-            System.out.println("读取文件出错!");
-            //e.printStackTrace();
+            System.out.println("echoue de parser lyrics!");
             return false;
         }
     }
 
     /**
-     * 将以字符串形式给定的分钟、秒钟、毫秒转换成一个以毫秒为单位的long型数
+     * retourner le nombre de millseconde(long) selon le l'entree de min,sec,millsec
      * 
      * @param min
-     *            分钟
+     *           
      * @param sec
-     *            秒钟
+     *            
      * @param mill
-     *            毫秒
-     * @return
+     *           
+     * @return time
      */
     private long getLongTime(String min, String sec, String mill) {
-        // 转成整型
         int m = Integer.parseInt(min);
         int s = Integer.parseInt(sec);
         int ms = Integer.parseInt(mill);
 
         if (s >= 60) {
-            System.out.println("警告: 出现了一个时间不正确的项 --> [" + min + ":" + sec + "."
+            System.out.println("warning: un mal formation de date--> [" + min + ":" + sec + "."
                     + mill.substring(0, 2) + "]");
         }
-        // 组合成一个长整型表示的以毫秒为单位的时间
+        // calculer le nombre de millseconde
         long time = m * 60 * 1000 + s * 1000 + ms;
         return time;
     }
