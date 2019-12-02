@@ -76,10 +76,9 @@ public class Server {
 			try {
 				socket = server.accept();
 				startChannel(socket);
-				System.out.println("has client come in");
+				System.out.println("Y'a un client ici");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				System.out.println("fail to get client...");
+				System.out.println("échoué de accepter un client...");
 			}
 			
 		}
