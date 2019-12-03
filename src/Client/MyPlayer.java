@@ -15,8 +15,6 @@ public class MyPlayer{
 
 	Sequencer sequencer;
 	Timer timer;
-	float time;
-	int current;
 	Frame paroleFrame;
 	float viteRate;
 	Map<Integer,String> Type_parole;
@@ -41,23 +39,23 @@ public class MyPlayer{
 		}
 		timer = new Timer();
 		viteRate = 1f;
-		time = 0f;
-		current = 0;
 		playParoles(music);
 		playNotes(music);
 	}
 	public void playParoles(Music music) {
 		ArrayList<parole> paroles = music.getParoles();
 		paroleFrame.lanchFrame();
-		paroleFrame.insertDocument(Type_parole.get(paroles.get(current).getType())+":", Color.green,0);
-		paroleFrame.insertDocument(paroles.get(current).getText()+"\n", Color.GRAY,paroleFrame.length());
+		paroleFrame.insertDocument(Type_parole.get(paroles.get(0).getType())+":", Color.green,0);
+		paroleFrame.insertDocument(paroles.get(0).getText()+"\n", Color.GRAY,paroleFrame.length());
 		timer.scheduleAtFixedRate(new TimerTask() {   
+			float time = 0f;
+			int current = 0;
 		    public void run() { 
 		    	time+=viteRate;
 		    	//System.out.println(time);
 		    	parole p = paroles.get(current);
 		    	if(time>p.getTime()+p.getDuree()) {
-		    		ChangeProcessus(p);
+		    		ChangeProcessus(p,time);
 		    		if(current>=paroles.size()-1){
 		    			timer.cancel();
 		    		}else {
@@ -67,12 +65,12 @@ public class MyPlayer{
 		    			paroleFrame.insertDocument(p.getText()+"\n", Color.GRAY,paroleFrame.length());			    		
 		    		}
 		    	}
-		    	ChangeProcessus(p);
+		    	ChangeProcessus(p,time);
 		    }
 		}, new Date(), 1);
 	}
 	
-	void ChangeProcessus(parole p) {
+	void ChangeProcessus(parole p,float time) {
 		long start = p.getTime();
 		String text = p.getText();
 		long duree = p.getDuree();
