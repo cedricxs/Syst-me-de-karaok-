@@ -12,7 +12,7 @@ public class Music implements Serializable{
 	String name;
 	private ArrayList<ArrayList<note>> notes;
 	private ArrayList<parole> paroles;
-	int vitesse; 
+	double vitesse; 
 	public Music(String name) {
 		this.name = name;
 		notes = new ArrayList<ArrayList<note>>();
@@ -25,10 +25,10 @@ public class Music implements Serializable{
 	public ArrayList<parole> getParoles(){
 		return this.paroles;
 	}
-	public void setVitesse(int vitesse) {
-		this.vitesse = vitesse;
+	public void setVitesse(double tempo) {
+		this.vitesse = tempo;
 	}
-	public int getVitesse() {
+	public double getVitesse() {
 		return this.vitesse;
 	}
 	public String getName() {

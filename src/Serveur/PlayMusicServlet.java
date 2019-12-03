@@ -92,7 +92,8 @@ public class PlayMusicServlet implements Servlet{
 		String fileName = "music/music/"+musicName+".mid";
 		try {
 			sequence = MidiSystem.getSequence(new File(fileName));
-			music.setVitesse(sequence.getResolution());
+			double Tempo = sequence.getMicrosecondLength()/(1000*sequence.getTickLength());
+			music.setVitesse(Tempo);
 			Track[] tracks = sequence.getTracks();
 			for(int i=0;i<tracks.length;i++) {
 				ArrayList<note> track = new ArrayList<note>(); 
@@ -102,11 +103,12 @@ public class PlayMusicServlet implements Servlet{
 					MidiMessage m = e.getMessage();			
 					if(m instanceof ShortMessage) {
 						ShortMessage ms = (ShortMessage)m;
-						int channel = ms.getChannel();
+						int channel = ms.getStatus();
 						int action = ms.getCommand();
 						int hauteur = ms.getData1();
+						
 						int puissance = ms.getData2()>127?127:ms.getData2();
-						long time = e.getTick();
+						long time = (long) (e.getTick()*Tempo);
 						track.add(new note(action, channel, hauteur, puissance , time));
 					}
 					else if(m instanceof MetaMessage) {
@@ -114,7 +116,7 @@ public class PlayMusicServlet implements Servlet{
 						int action = ms.getType();
 						//int channel = ms.getChannel();
 						byte[] data = ms.getData();
-						long time = e.getTick();
+						long time = (long) (e.getTick()*Tempo);
 						track.add(new note(data,action,time));
 					}
 				}
