@@ -56,8 +56,14 @@ public class MyPlayer{
 								channel.programChange(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
 							}
 						}else {
-							System.out.println(notes.get(pos).getAction());
-							
+							//System.out.println(notes.get(pos).getAction());
+							if(notes.get(pos).getAction()==81) {
+								
+								byte[] data = notes.get(pos).getData();
+								System.out.println(Byte.toUnsignedInt(data[0]));
+								System.out.println(Byte.toUnsignedInt(data[1]));
+								System.out.println(Byte.toUnsignedInt(data[2]));
+							}
 						}
 						pos++;
 					}
@@ -86,7 +92,6 @@ public class MyPlayer{
     public static void main(String[] args) {
 		PlayMusicServlet p = new PlayMusicServlet("");
 		Music music = p.parseMusic("let it go");
-		System.out.println(music.getVitesse());
 //		for(int i=0;i<music.getNotes().get(1).size();i++) {
 //			System.out.println(music.getNotes().get(1).get(i).getChannel());
 //		}
