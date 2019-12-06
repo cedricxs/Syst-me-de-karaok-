@@ -43,10 +43,11 @@ public class PlayMusicServlet implements Servlet{
 	public void service(Request req, Response res) {
 		// TODO Auto-generated method stub
 		Map<String,Integer> nb_joue = (Map<String, Integer>) servletContexte.get("nb_joue");
-		Map<String,ArrayList<String>> music_user = (Map<String, ArrayList<String>>) servletContexte.get("music_user");
+		Map<String,Integer> nb_lectures = (Map<String, Integer>) servletContexte.get("nb_lectures");
 		String musicName = (String)req.getContent();
 		res.setName(musicName);
 		Music music = parseMusic(musicName);
+		String username = req.getUtilisateur();
 		if(music==null) {
 			res.setStatus(404);
 			res.setContent("Not Found");
@@ -54,9 +55,8 @@ public class PlayMusicServlet implements Servlet{
 		else {
 			int nb = nb_joue.get(musicName);
 			nb_joue.put(musicName,++nb);
-			if(!music_user.get(musicName).contains(req.getUtilisateur())){
-				music_user.get(musicName).add(req.getUtilisateur());
-			}
+			int nb_user = nb_lectures.get(username);
+			nb_lectures.replace(username,++nb_user);
 			res.setStatus(200);
 			res.setContent(music);
 		}

@@ -20,9 +20,10 @@ public class Server {
 	ArrayList<Servlet> servlets;
 	ArrayList<String> musics;
 	Map<String,Object> servletContexte;
-	//Nombre de musiques jouées par chaque utilisateur
-	Map<String,ArrayList<String>> music_user;
+	//Nombre de lectures par musique
 	Map<String,Integer> nb_joue;
+	//Nombre de lectures par utilisateur
+	Map<String, Integer> nb_lectures;
 
 	public Server(int port) {
 		InitServer(port);
@@ -42,7 +43,6 @@ public class Server {
 				String music = musicName.substring(0,musicName.indexOf(".mid"));
 				if(!musics.contains(music)) {
 					musics.add(music);
-					music_user.put(music, new ArrayList<String>());
 					nb_joue.put(music,0);
 				}
 			}
@@ -52,8 +52,8 @@ public class Server {
 		try {
 			server = new ServerSocket(port);
 			musics = new ArrayList<String>();
-			music_user = new HashMap<String, ArrayList<String>>();
 			nb_joue = new HashMap<String,Integer>();
+			nb_lectures = new HashMap<String, Integer>();
 			servletContexte = new HashMap<String, Object>();
 			servlets = new ArrayList<Servlet>();
 			InitMusics();
@@ -61,7 +61,7 @@ public class Server {
 			addServlet(new StatistiqueServlet("statistique"));
 			addServlet(new ShowAllMusicServlet("show"));
 			servletContexte.put("nb_joue",nb_joue);
-			servletContexte.put("music_user",music_user);
+			servletContexte.put("nb_lectures",nb_lectures);
 			servletContexte.put("musics",musics);
 		} catch (IOException e) {
 			System.out.println("Port déja utilisé...");

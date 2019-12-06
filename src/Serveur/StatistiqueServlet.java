@@ -28,7 +28,7 @@ public class StatistiqueServlet implements Servlet {
 	@Override
 	public void service(Request req, Response res) {
 		Map<String,Integer> nb_joue = (Map<String, Integer>) servletContexte.get("nb_joue");
-		Map<String,ArrayList<String>> music_user = (Map<String, ArrayList<String>>) servletContexte.get("music_user");
+		Map<String,Integer> nb_lectures = (Map<String, Integer>) servletContexte.get("nb_lectures");
 		int max = 0;
 		String music = null;
 		Set<String> keys = nb_joue.keySet();
@@ -39,11 +39,28 @@ public class StatistiqueServlet implements Servlet {
 				music = key;
 			}
 		}
-		ArrayList<String> users = music_user.get(music);
+		String username = req.getUtilisateur();
+		int lectures = 0;
+		if (!nb_lectures.containsKey(username)){
+
+			nb_lectures.put(username,0);
+		}else{
+			lectures = nb_lectures.get(username);
+		}
+		int max_lectures = 0;
+		String max_user = null;
+		for(String user:nb_lectures.keySet()){
+			if(nb_lectures.get(user) >= max_lectures){
+				max_lectures = nb_lectures.get(user);
+				max_user = user;
+			}
+		}
+
 		Map<String,Object> result = new HashMap<String,Object>();
 		result.put("music", music);
-		result.put("nb", max);
-		result.put("users",users);
+		result.put("nb_music", max);
+		result.put("max_user", max_user);
+		result.put("max_lectures", max_lectures);
 		res.setContent(result);
 		res.setStatus(100);
 	}

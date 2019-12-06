@@ -20,13 +20,11 @@ public class Client{
 	//console pour rentrer les commandes
 	Scanner console;
 	String utilisateur;
-	public void setUtilisateur(String utilisateur) {
-		this.utilisateur = utilisateur;
-	}
-	public Client() {
+	public Client(String utilisateur) {
 		try {
 			//connecter avec serveur
 			connexion = new ConnectorClient(new Socket("127.0.0.1",8888),this);
+			this.utilisateur = utilisateur;
 			InitClient();
 		} catch (UnknownHostException e) {
 			System.out.println("IP de serveur incorrecte...");
@@ -112,14 +110,12 @@ public class Client{
 		else if(res.getStatus()==100){
 			Map<String,Object> result = (Map<String, Object>) res.getContent();
 			String music = (String) result.get("music");
-			int nb = (int) result.get("nb");
-			ArrayList<String> users = (ArrayList<String>) result.get("users");
-			System.out.println("Le plus joué : "+music);
+			int nb = (int) result.get("nb_music");
+			String max_user = (String)result.get("max_user");
+			int max_lectures = (int)result.get("max_lectures");
+			System.out.println("Morceau le plus joué : "+music);
 			System.out.println("Nombre de lectures : "+nb);
-			System.out.println("Les utilisateurs qui le joué :");
-			for(String user:users) {
-				System.out.println("\t"+user);
-			}
+			System.out.println("Utilisateur ayant joué le plus de morceaux : " + max_user + " avec " + max_lectures + " morceaux");
 		}
 		else {
 			Music music = (Music)res.getContent();
