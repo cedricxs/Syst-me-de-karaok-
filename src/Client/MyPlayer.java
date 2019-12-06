@@ -22,19 +22,19 @@ public class MyPlayer{
 		try {
 			sequencer = MidiSystem.getSequencer();
 			Type_parole = new HashMap<Integer, String>();
-			Type_parole.put(0,"trémolo");
-			Type_parole.put(1,"crié");
-			Type_parole.put(2,"portamento");
+			Type_parole.put(0,"(trémolo)");
+			Type_parole.put(1,"(crié)");
+			Type_parole.put(2,"(portamento)");
 		} catch (Exception e) {
 		}
 	}
-	
+
 	public void playMusic(Music music) {
 		if(paroleFrame!=null) {
 			paroleFrame.clear();
 			timer.cancel();
 		}
-		else{	
+		else{
 			paroleFrame = new Frame();
 		}
 		timer = new Timer();
@@ -47,10 +47,10 @@ public class MyPlayer{
 		paroleFrame.lanchFrame();
 		paroleFrame.insertDocument(Type_parole.get(paroles.get(0).getType())+":", Color.green,0);
 		paroleFrame.insertDocument(paroles.get(0).getText()+"\n", Color.GRAY,paroleFrame.length());
-		timer.scheduleAtFixedRate(new TimerTask() {   
+		timer.scheduleAtFixedRate(new TimerTask() {
 			float time = 0f;
 			int current = 0;
-		    public void run() { 
+		    public void run() {
 		    	time+=viteRate;
 		    	//System.out.println(time);
 		    	parole p = paroles.get(current);
@@ -59,17 +59,17 @@ public class MyPlayer{
 		    		if(current>=paroles.size()-1){
 		    			timer.cancel();
 		    		}else {
-		    			current++;			    		
+		    			current++;
 		    			p = paroles.get(current);
 		    			paroleFrame.insertDocument(Type_parole.get(paroles.get(current).getType())+":", Color.green,paroleFrame.length());
-		    			paroleFrame.insertDocument(p.getText()+"\n", Color.GRAY,paroleFrame.length());			    		
+		    			paroleFrame.insertDocument(p.getText()+"\n", Color.GRAY,paroleFrame.length());
 		    		}
 		    	}
 		    	ChangeProcessus(p,time);
 		    }
 		}, new Date(), 1);
 	}
-	
+
 	void ChangeProcessus(parole p,float time) {
 		long start = p.getTime();
 		String text = p.getText();
@@ -84,9 +84,9 @@ public class MyPlayer{
 			String r = paroleFrame.getDocument(paroleFrame.length()-rest-1,1);
 			paroleFrame.removeDocument(paroleFrame.length()-rest-1,1);
 			paroleFrame.insertDocument(r, Color.green, paroleFrame.length()-rest);
-		}			
+		}
 	}
-    
+
     public void playNotes(Music music) {
     	try {
 			Sequence sequence = new Sequence(Sequence.PPQ,music.getVitesse());
@@ -107,11 +107,11 @@ public class MyPlayer{
 						s.add(new MidiEvent(shMsg,n.getTime()));
 					}
 				}
-			}	
-	        sequencer.open(); 
+			}
+	        sequencer.open();
 	        sequencer.setSequence(sequence);
 			sequencer.start();
-			
+
 		} catch (InvalidMidiDataException | MidiUnavailableException e) {
 			e.printStackTrace();
 		}
@@ -123,7 +123,7 @@ public class MyPlayer{
 		sequencer.setTempoFactor(viteRate);
 		sequencer.start();
 	}
-    
+
     public void changeHauteur(int ecart) {
 		try {
 			sequencer.stop();
@@ -132,7 +132,7 @@ public class MyPlayer{
 			for(Track t:tracks) {
 				for(int i=0;i<t.size();i++) {
 					if(t.get(i).getMessage() instanceof ShortMessage) {
-						ShortMessage ms = (ShortMessage)t.get(i).getMessage();					
+						ShortMessage ms = (ShortMessage)t.get(i).getMessage();
 						ms.setMessage(ms.getCommand(), ms.getChannel(), ms.getData1(), ms.getData2()-ecart>0?ms.getData2()-ecart:0);
 					}
 				}
@@ -143,5 +143,5 @@ public class MyPlayer{
 		} catch (InvalidMidiDataException e) {
 			e.printStackTrace();
 		}
-	}	
+	}
 }

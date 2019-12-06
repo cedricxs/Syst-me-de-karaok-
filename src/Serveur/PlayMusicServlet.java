@@ -55,36 +55,36 @@ public class PlayMusicServlet implements Servlet{
 			int nb = nb_joue.get(musicName);
 			nb_joue.put(musicName,++nb);
 			if(!music_user.get(musicName).contains(req.getUtilisateur())){
-				music_user.get(musicName).add(req.getUtilisateur());				
+				music_user.get(musicName).add(req.getUtilisateur());
 			}
 			res.setStatus(200);
 			res.setContent(music);
 		}
-		
+
 	}
 
 	@Override
 	public String getName() {
 		return this.name;
 	}
-	
+
 	public Music parseMusic(String musicName) {
 		Music music = new Music(musicName);
 		if(parseNotes(musicName,music)&&parseParoles(musicName, music)) {
-			System.out.println("reussir parser Music");
-			return music;	
+			System.out.println("parseMusic réussi");
+			return music;
 		}else {
 			return null;
 		}
 	}
 
 	/**
-	 * parse le fichier de .mid 
-	 * 
-	 * @param musicName: le nom de musique 
-	 * 
+	 * parse le fichier de .mid
+	 *
+	 * @param musicName: le nom de musique
+	 *
 	 * @param music: enregistre les notes apres parser
-	 * 
+	 *
 	 * @return l'etat de parser : boolean
 	 */
 	public boolean parseNotes(String musicName, Music music) {
@@ -95,11 +95,11 @@ public class PlayMusicServlet implements Servlet{
 			music.setVitesse(sequence.getResolution());
 			Track[] tracks = sequence.getTracks();
 			for(int i=0;i<tracks.length;i++) {
-				ArrayList<note> track = new ArrayList<note>(); 
+				ArrayList<note> track = new ArrayList<note>();
 				music.getNotes().add(track);
 				for(int j=0;j<tracks[i].size();j++) {
 					MidiEvent e = tracks[i].get(j);
-					MidiMessage m = e.getMessage();			
+					MidiMessage m = e.getMessage();
 					if(m instanceof ShortMessage) {
 						ShortMessage ms = (ShortMessage)m;
 						int channel = ms.getChannel();
@@ -125,13 +125,13 @@ public class PlayMusicServlet implements Servlet{
 			return false;
 		}
 	}
-	
+
 	/**
      * parse fichier de .lrc
-     * 
+     *
      * @param String musicName
      * 		  Music music: enregistre les paroles apres parser
-     *            
+     *
      * @return l'etat de parser : boolean
      */
     private boolean parseParoles(String musicName, Music music) {
@@ -146,7 +146,7 @@ public class PlayMusicServlet implements Servlet{
                         new FileInputStream(file), encoding);
                 BufferedReader bufferedReader = new BufferedReader(read);
                 String regex = "\\[(\\d{1,2}):(\\d{1,2}).(\\d{1,2})\\]"; // reg
-                Pattern pattern = Pattern.compile(regex); // creer Pattern 
+                Pattern pattern = Pattern.compile(regex); // creer Pattern
                 String lineStr = null; // lire un ligne chaque fois
                 int i=0;
                 while ((lineStr = bufferedReader.readLine()) != null) {
@@ -159,40 +159,40 @@ public class PlayMusicServlet implements Servlet{
                         long time = getLongTime(min, sec, mill + "0");
                         // obtenir le parole pour le moment
                         String text = lineStr.substring(matcher.end());
-                        
+
                         if(!paroles.isEmpty()) {
                         	parole last = paroles.get(paroles.size()-1);
                         	last.setDuree(time-last.getTime());
                         }
                         parole p = new parole(time,text);
                         p.setType(i++%3);
-                        paroles.add(p);  
+                        paroles.add(p);
                     }
                 }
                 parole last = paroles.get(paroles.size()-1);
             	last.setDuree(10);
                 read.close();
-                System.out.println("parse fini。。。");
+                System.out.println("parse fini...");
                 return true;
             } else {
-                System.out.println("echoue de trouver ce fichier:" + fileName);
+                System.out.println("Fichier non trouvé:" + fileName);
                 return false;
             }
         } catch (Exception e) {
-            System.out.println("echoue de parser lyrics!");
+            System.out.println("parseParoles échoué");
             return false;
         }
     }
 
     /**
      * retourner le nombre de millseconde(long) selon le l'entree de min,sec,millsec
-     * 
+     *
      * @param min
-     *           
+     *
      * @param sec
-     *            
+     *
      * @param mill
-     *           
+     *
      * @return time
      */
     private long getLongTime(String min, String sec, String mill) {
@@ -210,4 +210,3 @@ public class PlayMusicServlet implements Servlet{
     }
 
 }
-

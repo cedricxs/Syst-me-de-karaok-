@@ -10,7 +10,7 @@ import Resource.ConnectorServer;
 import Resource.Connector;
 import Resource.Data;
 import Resource.Request;
-import Resource.Response; 
+import Resource.Response;
 import java.io.File;
 import java.io.IOException;
 
@@ -23,16 +23,16 @@ public class Server {
 	//Nombre de musiques jouées par chaque utilisateur
 	Map<String,ArrayList<String>> music_user;
 	Map<String,Integer> nb_joue;
-	
+
 	public Server(int port) {
 		InitServer(port);
 	}
-	
+
 	private void addServlet(Servlet s) {
 		servlets.add(s);
 		s.setServletContexte(servletContexte);
 	}
-	
+
 	public void InitMusics() {
 		String path = "music/music/";
 		File musicsDir = new File(path);
@@ -52,11 +52,11 @@ public class Server {
 		try {
 			server = new ServerSocket(port);
 			musics = new ArrayList<String>();
-			music_user = new HashMap<String, ArrayList<String>>(); 
+			music_user = new HashMap<String, ArrayList<String>>();
 			nb_joue = new HashMap<String,Integer>();
 			servletContexte = new HashMap<String, Object>();
 			servlets = new ArrayList<Servlet>();
-			InitMusics();		
+			InitMusics();
 			addServlet(new PlayMusicServlet("play"));
 			addServlet(new StatistiqueServlet("statistique"));
 			addServlet(new ShowAllMusicServlet("show"));
@@ -64,26 +64,26 @@ public class Server {
 			servletContexte.put("music_user",music_user);
 			servletContexte.put("musics",musics);
 		} catch (IOException e) {
-			System.out.println("la porte déja utilisé...");
+			System.out.println("Port déja utilisé...");
 			System.exit(0);
 		}
-		System.out.println("serveur demarrer!!!");
+		System.out.println("Serveur démarré");
 	}
-	
+
 	public void start() {
 		while(true) {
 			Socket socket;
 			try {
 				socket = server.accept();
 				startChannel(socket);
-				System.out.println("Y'a un client ici");
+				System.out.println("Un client est arrivé :)");
 			} catch (IOException e) {
-				System.out.println("échoué de accepter un client...");
+				System.out.println("Client non accepté");
 			}
-			
+
 		}
 	}
-	
+
 	void startChannel(Socket socket) {
 		Connector client = new ConnectorServer (socket,this);
 		new Thread(client).start();
@@ -94,13 +94,11 @@ public class Server {
 		Response res = new Response();
 		for(Servlet s:servlets) {
 			if(s.getName().equals(req.getCommande())) {
-				System.out.println("Traitement de la requete...");
+				System.out.println("Traitement de la requête...");
 				s.service(req, res);
 			}
 		}
 		return res;
 	}
-	
+
 }
-
-

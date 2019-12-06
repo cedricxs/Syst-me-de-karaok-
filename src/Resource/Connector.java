@@ -12,7 +12,7 @@ public abstract class Connector implements Runnable{
 	ObjectInputStream in;
 	boolean isRunning;
 	abstract void service(Data data);
-	
+
 	public Connector(Socket connexion) {
 		// TODO Auto-generated constructor stub
 		this.connexion = connexion;
@@ -27,7 +27,7 @@ public abstract class Connector implements Runnable{
 			close();
 		}
 	}
-	
+
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -43,10 +43,10 @@ public abstract class Connector implements Runnable{
 			Data data = (Data)in.readObject();
 			return data;
 		} catch (ClassNotFoundException | IOException e) {
-			System.out.println("recu les données échoué...");
+			System.out.println("Echec de la réception des données...");
 			isRunning = false;
 			close();
-		} 
+		}
 		return null;
 	}
 	public void send(Data data) {
@@ -55,11 +55,11 @@ public abstract class Connector implements Runnable{
 			out.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			System.out.println("evoie les données échoué...");
+			System.out.println("Echec de l'envoi des données...");
 			isRunning = false;
 			close();
 		}
-		
+
 	}
 	public void close(){
 		try {

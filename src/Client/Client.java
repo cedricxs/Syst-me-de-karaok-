@@ -31,11 +31,11 @@ public class Client{
 		} catch (UnknownHostException e) {
 			System.out.println("IP de serveur incorrecte...");
 		} catch (IOException e) {
-			System.out.println("connexion échouée avec serveur...");
+			System.out.println("Echec de connexion au serveur...");
 			System.exit(0);
 		}
 	}
-	
+
 	//initialiser le client
 	public void InitClient(){
 			player = new MyPlayer();
@@ -45,8 +45,8 @@ public class Client{
 			req.setUtilisateur(utilisateur);
 			connexion.send(req);
 	}
-	
-	
+
+
 	public void start() {
 		new Thread(connexion).start();
 		while(true) {
@@ -55,27 +55,27 @@ public class Client{
 			Data req = parseRequest(content);
 			if(req!=null) {
 				//l'envoie a serveur
-				connexion.send(req);				
+				connexion.send(req);
 			}
 		}
 	}
-	
+
 	public void playMusic(Music music) {
 		player.playMusic(music);
 	}
-	
-	
+
+
 	public void service(Data data) {
 		try {
 			parseResponse(data);
 		}catch(Exception e) {
-			System.out.println("parse réponde échoué...");
+			System.out.println("parseResponse échoué...");
 		}
 	}
-	
+
 	Data parseRequest(String content) {
 		Request req;
-		if(content.indexOf("show")!=-1){ 
+		if(content.indexOf("show")!=-1){
 			req = new Request("show");
 		}
 		else if(content.indexOf("cv")!=-1) {
@@ -115,7 +115,7 @@ public class Client{
 			int nb = (int) result.get("nb");
 			ArrayList<String> users = (ArrayList<String>) result.get("users");
 			System.out.println("Le plus joué : "+music);
-			System.out.println("nombre de joué : "+nb);
+			System.out.println("Nombre de lectures : "+nb);
 			System.out.println("Les utilisateurs qui le joué :");
 			for(String user:users) {
 				System.out.println("\t"+user);
@@ -127,8 +127,3 @@ public class Client{
 		}
 	}
 }
-
-
-
-
-
