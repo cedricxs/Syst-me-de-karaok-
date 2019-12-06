@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import javax.sound.midi.*;
 
 import Music.*;
+import Serveur.PlayMusicServlet;
 
 public class MyPlayer{
 
@@ -29,7 +30,7 @@ public class MyPlayer{
 		}
 	}
 
-	public void playMusic(Music music) {
+	public void playMusic(Music music) throws MidiUnavailableException {
 		if(paroleFrame!=null) {
 			paroleFrame.clear();
 			timer.cancel();
@@ -87,34 +88,60 @@ public class MyPlayer{
 		}
 	}
 
-    public void playNotes(Music music) {
-    	try {
-			Sequence sequence = new Sequence(Sequence.PPQ,music.getVitesse());
-			ArrayList<ArrayList<note>> notes = music.getNotes();
-			for(int i=0;i<notes.size();i++) {
-				ArrayList<note> track = notes.get(i);
-				Track s = sequence.createTrack();
-				for(int j=0;j<track.size();j++) {
-					note n = track.get(j);
-					if(n.isMetaNote()) {
-						MetaMessage m = new MetaMessage();
-						m.setMessage(n.getAction(), n.getData(), n.getData().length);
-						s.add(new MidiEvent(m,n.getTime()));
-					}
-					else{
-						ShortMessage shMsg = new ShortMessage();
-						shMsg.setMessage(n.getAction(),n.getChannel() ,n.getHauteur(),n.getPuissance());
-						s.add(new MidiEvent(shMsg,n.getTime()));
-					}
-				}
-			}
-	        sequencer.open();
-	        sequencer.setSequence(sequence);
-			sequencer.start();
+	public void playNotes(Music music) throws MidiUnavailableException {
+		Timer[] timers = new Timer[music.getNotes().size()];
+		Synthesizer syn = MidiSystem.getSynthesizer();
+		syn.open();
+		final MidiChannel[] canaux = syn.getChannels();
+		for(int i=0;i<timers.length;i++) {
+			timers[i] = new Timer();
+			ArrayList<note> notes = music.getNotes().get(i);
+			MidiChannel channel = canaux[i] ;
+			timers[i].scheduleAtFixedRate(new TimerTask() {
+											  int mtime = 0;
+											  int pos = 0;
+											  @Override
+											  public void run() {
+												  mtime++;
+												  if(mtime>=notes.get(pos).getTime()) {
+													  if(!notes.get(pos).isMetaNote()) {
+														  if(128<=notes.get(pos).getChannel()&&notes.get(pos).getChannel()<144) {
+															  channel.noteOff(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
+														  }
+														  else if(144<=notes.get(pos).getChannel()&&notes.get(pos).getChannel()<160) {
+															  channel.noteOn(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
+														  }
+														  else if(160<=notes.get(pos).getChannel()&&notes.get(pos).getChannel()<176) {
+															  channel.setPolyPressure(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
+														  }
+														  else if(176<=notes.get(pos).getChannel()&&notes.get(pos).getChannel()<192) {
+															  channel.controlChange(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
+														  }
+														  else if(192<=notes.get(pos).getChannel()&&notes.get(pos).getChannel()<208) {
+															  channel.programChange(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
+														  }
+													  }else {
+														  //System.out.println(notes.get(pos).getAction());
+														  if(notes.get(pos).getAction()==81) {
 
-		} catch (InvalidMidiDataException | MidiUnavailableException e) {
-			e.printStackTrace();
+															  byte[] data = notes.get(pos).getData();
+														  }
+													  }
+													  pos++;
+												  }
+
+
+
+
+
+											  }
+
+										  }
+					, new Date(), 1);
 		}
+
+
+
 	}
 
     public void changeVite(float viteRate) {
@@ -141,6 +168,21 @@ public class MyPlayer{
 			sequencer.setTickPosition(tick);
 			sequencer.start();
 		} catch (InvalidMidiDataException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) {
+		PlayMusicServlet p = new PlayMusicServlet("");
+		Music music = p.parseMusic("let it go");
+//		for(int i=0;i<music.getNotes().get(1).size();i++) {
+//			System.out.println(music.getNotes().get(1).get(i).getChannel());
+//		}
+		MyPlayer m = new MyPlayer();
+		try {
+			m.playNotes(music);
+		} catch (MidiUnavailableException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -10,7 +10,7 @@ public class note implements Serializable{
 	private static final long serialVersionUID = 1L;
 	long dure;
 	int hauteur;
-	long time;
+	double time;
 	int puissance;
 	int channel;
 	int action;
@@ -47,8 +47,11 @@ public class note implements Serializable{
 	public int getHauteur() {
 		return this.hauteur;
 	}
-	public long getTime() {
+	public double getTime() {
 		return this.time;
+	}
+	public void setTime(double time) {
+		this.time = time;
 	}
 	public int getPuissance() {
 		return this.puissance;

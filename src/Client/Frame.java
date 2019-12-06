@@ -58,7 +58,11 @@ public class Frame extends JFrame {
 		SimpleAttributeSet set = new SimpleAttributeSet();
 		StyleConstants.setForeground(set, textColor);//assigne couleur
 		StyleConstants.setFontSize(set, 12);//assigne pointure
+
+		/*
+		StyleConstants.setBackground(set, Color.BLACK);
 		Document doc = jtp.getStyledDocument();
+		 */
 		try
 		{
 			doc.insertString(offset, text, set);//insert le texte

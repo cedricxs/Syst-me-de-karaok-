@@ -59,7 +59,12 @@ public class Client{
 	}
 
 	public void playMusic(Music music) {
-		player.playMusic(music);
+		try{
+			player.playMusic(music);
+		}catch (Exception e){
+			System.out.println(e.getStackTrace());
+		}
+
 	}
 
 

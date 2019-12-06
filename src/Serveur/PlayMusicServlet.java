@@ -92,7 +92,10 @@ public class PlayMusicServlet implements Servlet{
 		String fileName = "music/music/"+musicName+".mid";
 		try {
 			sequence = MidiSystem.getSequence(new File(fileName));
-			music.setVitesse(sequence.getResolution());
+
+			System.out.println(sequence.getTickLength());
+			int so = sequence.getResolution();
+			double Tempo = 1.0;
 			Track[] tracks = sequence.getTracks();
 			for(int i=0;i<tracks.length;i++) {
 				ArrayList<note> track = new ArrayList<note>();
@@ -102,19 +105,31 @@ public class PlayMusicServlet implements Servlet{
 					MidiMessage m = e.getMessage();
 					if(m instanceof ShortMessage) {
 						ShortMessage ms = (ShortMessage)m;
-						int channel = ms.getChannel();
+						int channel = ms.getStatus();
 						int action = ms.getCommand();
 						int hauteur = ms.getData1();
+
 						int puissance = ms.getData2()>127?127:ms.getData2();
-						long time = e.getTick();
+						long time = (long) (e.getTick()*Tempo);
 						track.add(new note(action, channel, hauteur, puissance , time));
 					}
 					else if(m instanceof MetaMessage) {
 						MetaMessage ms = (MetaMessage)m;
 						int action = ms.getType();
-						//int channel = ms.getChannel();
 						byte[] data = ms.getData();
-						long time = e.getTick();
+						if(action==81) {
+
+							int bpm = PlayMusicServlet.bytesToInt2(data);
+							System.out.println(bpm);
+							Tempo = (double)bpm/(1000*so);
+							System.out.println(so);
+							System.out.println(Tempo);
+							for(note n:track) {
+								n.setTime(n.getTime()*Tempo);
+							}
+						}
+						//int channel = ms.getChannel();
+						long time = (long) (e.getTick()*Tempo);
 						track.add(new note(data,action,time));
 					}
 				}
@@ -124,6 +139,13 @@ public class PlayMusicServlet implements Servlet{
 			// TODO Auto-generated catch block
 			return false;
 		}
+	}
+	public static int bytesToInt2(byte[] src) {
+		int value;
+		value = (int) (((src[0] & 0xFF)<<16)
+				|((src[1] & 0xFF)<<8)
+				|(src[2] & 0xFF));
+		return value;
 	}
 
 	/**
