@@ -93,41 +93,44 @@ public class MyPlayer{
 		} catch (MidiUnavailableException e) {
 			System.out.println("echou ouvrir Synthesizer");
 		}
-		final MidiChannel[] canaux = syn.getChannels();
+		final MidiChannel[] channels = syn.getChannels();
 		for(int i=0;i<music.getNotes().size();i++) {
 			ArrayList<note> notes = music.getNotes().get(i);
 			if(notes.isEmpty())continue;
 			Timer timer = new Timer();
 			timers.add(timer);
-			MidiChannel channel = canaux[i] ;
+			MidiChannel channel = channels[i] ;
 			timer.scheduleAtFixedRate(new TimerTask() {
 											  double time = 0.0;
 											  int pos = 0;
 											  @Override
 											  public void run() {
 												  time += vitesseRate;
-												  if(time>=notes.get(pos).getTime()) {
-													  if(128==notes.get(pos).getCommand()) {
-														  channel.noteOff(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-pussanceOffset>0?notes.get(pos).getPuissance()-pussanceOffset:0);
+												  try {
+													  if(time>=notes.get(pos).getTime()) {
+														  if(128==notes.get(pos).getCommand()) {
+															  channel.noteOff(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-pussanceOffset>0?notes.get(pos).getPuissance()-pussanceOffset:0);
+														  }
+														  else if(144==notes.get(pos).getCommand()) {
+															  channel.noteOn(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-pussanceOffset>0?notes.get(pos).getPuissance()-pussanceOffset:0);
+														  }
+														  else if(160==notes.get(pos).getCommand()) {
+															  channel.setPolyPressure(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
+														  }
+														  else if(176==notes.get(pos).getCommand()) {
+															  channel.controlChange(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
+														  }
+														  else if(192==notes.get(pos).getCommand()) {
+															  channel.programChange(notes.get(pos).getPuissance(), notes.get(pos).getHauteur());
+														  }
+														  
+														  paroleFrame.changeBeat(notes.get(pos).getHauteur());
+														  pos++;
+														  if(pos==notes.size()) {
+															  this.cancel();
+														  }
 													  }
-													  else if(144==notes.get(pos).getCommand()) {
-														  channel.noteOn(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-pussanceOffset>0?notes.get(pos).getPuissance()-pussanceOffset:0);
-													  }
-													  else if(160==notes.get(pos).getCommand()) {
-														  channel.setPolyPressure(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
-													  }
-													  else if(176==notes.get(pos).getCommand()) {
-														  channel.controlChange(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
-													  }
-													  else if(192==notes.get(pos).getCommand()) {
-														  channel.programChange(notes.get(pos).getPuissance(), notes.get(pos).getHauteur());
-													  }
-													  
-													  paroleFrame.changeBeat(notes.get(pos).getHauteur());
-													  pos++;
-													  if(pos==notes.size()) {
-														  this.cancel();
-													  }
+												  }catch(Exception e) {
 												  }
 											  }
 										  }

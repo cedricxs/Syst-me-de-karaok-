@@ -19,11 +19,10 @@ public class Client{
 	//console pour rentrer les commandes
 	Scanner console;
 	String utilisateur;
-	public Client(String utilisateur) {
+	public Client() {
 		try {
 			//connecter avec serveur
 			connexion = new ConnectorClient(new Socket("127.0.0.1",8888),this);
-			this.utilisateur = utilisateur;
 			InitClient();
 		} catch (UnknownHostException e) {
 			System.out.println("IP de serveur incorrecte...");
@@ -38,7 +37,9 @@ public class Client{
 		player = new MyPlayer();
 		console = new Scanner(System.in);
 	}
-
+	public void setUtilisateur(String utilisateur) {
+		this.utilisateur = utilisateur;
+	}
 
 	public void start() {
 		new Thread(connexion).start();
@@ -116,6 +117,7 @@ public class Client{
 			int nb = (int) result.get("nb_music");
 			String max_user = (String)result.get("max_user");
 			int max_lectures = (int)result.get("max_lectures");
+			System.out.println("Bonjour "+utilisateur+" !");
 			System.out.println("Morceau le plus joué : "+music);
 			System.out.println("Nombre de lectures : "+nb);
 			System.out.println("Utilisateur ayant joué le plus de morceaux : " + max_user + " avec " + max_lectures + " morceaux");

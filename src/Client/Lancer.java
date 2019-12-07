@@ -3,7 +3,8 @@ package Client;
 public class Lancer {
 
 public static void main(String[] args) {
-		Client c = new Client("Xingshuo");
+		Client c = new Client();
+		c.setUtilisateur("Andi");
 		c.start();
 	}
 }

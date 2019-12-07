@@ -36,7 +36,6 @@ public class Frame extends JFrame {
 			return doc.getText(offset, length);
 			
 		} catch (BadLocationException e) {
-			e.printStackTrace();
 			return null;
 		}
 	}
