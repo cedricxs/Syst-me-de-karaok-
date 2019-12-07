@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.sound.midi.*;
-
 import Music.*;
 
 public class MyPlayer{
@@ -17,6 +16,7 @@ public class MyPlayer{
 	double vitesseRate;
 	int pussanceOffset;
 	Map<Integer,String> Type_parole;
+	Synthesizer syn;
 	
 	public MyPlayer() {
 			Type_parole = new HashMap<Integer, String>();
@@ -25,9 +25,15 @@ public class MyPlayer{
 			Type_parole.put(2,"(portamento)");
 			timers = new ArrayList<>();
 			paroleFrame = new Frame();
+			try {
+				syn = MidiSystem.getSynthesizer();
+			} catch (MidiUnavailableException e) {
+				System.out.println("echou creer Synthesizer");
+			}
 	}
 
 	public void playMusic(Music music){
+		if(syn.isOpen())syn.close();
 		paroleFrame.clear();
 		for(Timer timer:timers) {
 			timer.cancel();
@@ -82,18 +88,17 @@ public class MyPlayer{
 	}
 
 	public void playNotes(Music music){
-		Synthesizer syn = null;
 		try {
-			syn = MidiSystem.getSynthesizer();
 			syn.open();
 		} catch (MidiUnavailableException e) {
 			System.out.println("echou ouvrir Synthesizer");
 		}
 		final MidiChannel[] canaux = syn.getChannels();
 		for(int i=0;i<music.getNotes().size();i++) {
+			ArrayList<note> notes = music.getNotes().get(i);
+			if(notes.isEmpty())continue;
 			Timer timer = new Timer();
 			timers.add(timer);
-			ArrayList<note> notes = music.getNotes().get(i);
 			MidiChannel channel = canaux[i] ;
 			timer.scheduleAtFixedRate(new TimerTask() {
 											  double time = 0.0;
@@ -102,23 +107,22 @@ public class MyPlayer{
 											  public void run() {
 												  time += vitesseRate;
 												  if(time>=notes.get(pos).getTime()) {
-													  if(!notes.get(pos).isMetaNote()) {
-														  if(128<=notes.get(pos).getChannel()&&notes.get(pos).getChannel()<144) {
-															  channel.noteOff(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-pussanceOffset>0?notes.get(pos).getPuissance()-pussanceOffset:0);
-														  }
-														  else if(144<=notes.get(pos).getChannel()&&notes.get(pos).getChannel()<160) {
-															  channel.noteOn(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-pussanceOffset>0?notes.get(pos).getPuissance()-pussanceOffset:0);
-														  }
-														  else if(160<=notes.get(pos).getChannel()&&notes.get(pos).getChannel()<176) {
-															  channel.setPolyPressure(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
-														  }
-														  else if(176<=notes.get(pos).getChannel()&&notes.get(pos).getChannel()<192) {
-															  channel.controlChange(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
-														  }
-														  else if(192<=notes.get(pos).getChannel()&&notes.get(pos).getChannel()<208) {
-															  channel.programChange(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
-														  }
+													  if(128==notes.get(pos).getCommand()) {
+														  channel.noteOff(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-pussanceOffset>0?notes.get(pos).getPuissance()-pussanceOffset:0);
 													  }
+													  else if(144==notes.get(pos).getCommand()) {
+														  channel.noteOn(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-pussanceOffset>0?notes.get(pos).getPuissance()-pussanceOffset:0);
+													  }
+													  else if(160==notes.get(pos).getCommand()) {
+														  channel.setPolyPressure(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
+													  }
+													  else if(176==notes.get(pos).getCommand()) {
+														  channel.controlChange(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
+													  }
+													  else if(192==notes.get(pos).getCommand()) {
+														  channel.programChange(notes.get(pos).getPuissance(), notes.get(pos).getHauteur());
+													  }
+													  
 													  paroleFrame.changeBeat(notes.get(pos).getHauteur());
 													  pos++;
 													  if(pos==notes.size()) {
@@ -133,7 +137,7 @@ public class MyPlayer{
     public void changeVite(double vitesseRate) {
     	this.vitesseRate = vitesseRate;
 	}
-    public void changeHauteur(int ecart) {
-    	this.pussanceOffset = ecart;
+    public void changeHauteur(int pussanceOffset) {
+    	this.pussanceOffset = pussanceOffset;
 	}
 }

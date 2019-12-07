@@ -16,6 +16,9 @@ public class Music implements Serializable{
 	public Music(String name) {
 		this.name = name;
 		notes = new ArrayList<ArrayList<note>>();
+		for(int i=0;i<16;i++) {
+			notes.add(new ArrayList<note>());
+		}
 		paroles = new ArrayList<parole>();
 	}
 	public ArrayList<ArrayList<note>> getNotes(){

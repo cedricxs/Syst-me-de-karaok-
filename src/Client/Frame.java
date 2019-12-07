@@ -19,8 +19,8 @@ public class Frame extends JFrame {
 		jtp = new JTextPane();
 		JScrollPane ScrollPane = new JScrollPane(jtp);
 		beat = new Animation(50);
-		beat.setBounds(350, 100, 500, 500);
-		ScrollPane.setBounds(0, 0, 300, 500);
+		beat.setBounds(350, 100, 500, 400);
+		ScrollPane.setBounds(0, 0, 300, 400);
 		layeredPane = new JLayeredPane();
 		layeredPane.add(beat, JLayeredPane.DEFAULT_LAYER);
 		layeredPane.add(ScrollPane, JLayeredPane.POPUP_LAYER);
@@ -76,16 +76,20 @@ public class Frame extends JFrame {
 	}
 
 	public void changeBeat(int hauteur){
-		if(hauteur > 0) {
-			layeredPane.remove(layeredPane.getIndexOf(beat));
-			beat.w = 2*hauteur;
-			beat.h = 2*hauteur;
-			layeredPane.add(beat, JLayeredPane.DEFAULT_LAYER);
+		try {
+			if(hauteur > 0) {
+				layeredPane.remove(layeredPane.getIndexOf(beat));
+				beat.w = 2*hauteur;
+				beat.h = 2*hauteur;
+				layeredPane.add(beat, JLayeredPane.DEFAULT_LAYER);
+			}
+		}catch(Exception e) {
+			
 		}
 	}
 
 	void lanchFrame() {
-		setSize(600,400);
+		setSize(600,440);
 		setLocation(50,50);
 		setVisible(true);
 	}

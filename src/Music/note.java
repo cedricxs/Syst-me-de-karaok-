@@ -4,42 +4,22 @@ import java.io.Serializable;
 
 public class note implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	long dure;
 	int hauteur;
 	double time;
 	int puissance;
-	int channel;
-	int action;
-	byte[] data;
-	boolean isMetaNote;
+	int command;
 	//notes (avec leur durée, leur hauteur, et peut-être leur date)
-	public note(byte[] data,int type,double time) {
-		this.data = data;
-		this.action = type;
-		this.time = time;
-		isMetaNote = true;
-	}
-	public note(int action,int channel, int hauteur, int puissance,double time) {
+	public note(int command, int hauteur, int puissance,double time) {
 		// TODO Auto-generated constructor stub
-		this.action = action;
-		this.channel = channel;
+		this.command = command;
 		this.puissance = puissance;
 		this.hauteur = hauteur;
 		this.time = time;
-		isMetaNote = false;
-	}
-	public boolean isMetaNote() {
-		return isMetaNote;
 	}
 	public void setDure(long dure) {
 		this.dure = dure;
-	}
-	public byte[] getData() {
-		return this.data;
 	}
 	public long getDure() {
 		return this.dure;
@@ -56,11 +36,8 @@ public class note implements Serializable{
 	public int getPuissance() {
 		return this.puissance;
 	}
-	public int getAction() {
-		return this.action;
-	}
-	public int getChannel() {
-		return this.channel;
+	public int getCommand() {
+		return this.command;
 	}
 
 }

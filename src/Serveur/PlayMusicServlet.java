@@ -93,27 +93,25 @@ public class PlayMusicServlet implements Servlet{
 			int so = sequence.getResolution();
 			double Tempo = 1.0;
 			Track[] tracks = sequence.getTracks();
+			ArrayList<ArrayList<note>> notes = music.getNotes();
 			for(int i=0;i<tracks.length;i++) {
-				ArrayList<note> track = new ArrayList<note>();
-				music.getNotes().add(track);
 				for(int j=0;j<tracks[i].size();j++) {
 					MidiEvent e = tracks[i].get(j);
 					MidiMessage m = e.getMessage();
 					if(m instanceof ShortMessage) {
 						ShortMessage ms = (ShortMessage)m;
-						int channel = ms.getStatus();
-						int action = ms.getCommand();
+						int status = ms.getStatus();
+						int command = ms.getCommand();
+						int channel = status - command;
 						int hauteur = ms.getData1();
 						int puissance = ms.getData2()>127?127:ms.getData2();
 						double time = e.getTick()*Tempo;
-						track.add(new note(action, channel, hauteur, puissance , time));
+						notes.get(channel).add(new note(command, hauteur, puissance , time));
 					}
 					else if(m instanceof MetaMessage) {
 						MetaMessage ms = (MetaMessage)m;
-						int action = ms.getType();
-						byte[] data = ms.getData();
-						if(action==81) {
-							int bpm = PlayMusicServlet.bytesToInt2(data);
+						if(ms.getType()==81) {
+							int bpm = bytesToInt(ms.getData());
 							Tempo = (double)bpm/(1000*so);
 							for(int k=0;k<i;k++) {
 								ArrayList<note> k_track = music.getNotes().get(k);
@@ -122,8 +120,6 @@ public class PlayMusicServlet implements Servlet{
 								}
 							}	
 						}
-						double time = e.getTick()*Tempo;
-						track.add(new note(data,action,time));
 					}
 				}
 			}
@@ -132,7 +128,7 @@ public class PlayMusicServlet implements Servlet{
 			return false;
 		}
 	}
-	public static int bytesToInt2(byte[] src) {
+	private int bytesToInt(byte[] src) {
 		int value;
 		value = (int) (((src[0] & 0xFF)<<16)
 				|((src[1] & 0xFF)<<8)
@@ -169,7 +165,7 @@ public class PlayMusicServlet implements Servlet{
                         // [02:34.94] ----correspendant---> [min:sec.millsec]
                         String min = matcher.group(1); // min
                         String sec = matcher.group(2); // sec
-                        String mill = matcher.group(3); // millsec, il faut mutifier 10
+                        String mill = matcher.group(3); // millsec, il faut multifier 10
                         long time = getLongTime(min, sec, mill + "0");
                         // obtenir le parole pour le moment
                         String text = lineStr.substring(matcher.end());
@@ -213,7 +209,6 @@ public class PlayMusicServlet implements Servlet{
         int m = Integer.parseInt(min);
         int s = Integer.parseInt(sec);
         int ms = Integer.parseInt(mill);
-
         if (s >= 60) {
             System.out.println("warning: un mal formation de date--> [" + min + ":" + sec + "."
                     + mill.substring(0, 2) + "]");

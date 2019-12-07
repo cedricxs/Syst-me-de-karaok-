@@ -5,7 +5,8 @@ import java.awt.*;
 
 public class Animation extends JPanel {
 
-    int w;
+	private static final long serialVersionUID = 1L;
+	int w;
     int h;
 
     public Animation(int hauteur){
@@ -15,6 +16,6 @@ public class Animation extends JPanel {
 
     public void paint(Graphics g) {
         g.setColor(Color.BLUE);
-        g.fillOval(0, 0, w,h);
+        g.fillOval(100-w/2, 100-h/2, w,h);
     }
 }
