@@ -20,7 +20,6 @@ public class Frame extends JFrame {
 		jtp = new JTextPane();
 		JScrollPane ScrollPane = new JScrollPane(jtp);
 		container.add(ScrollPane);
-		//addCloseListenser();
 	}
 	public int length() {
 		return jtp.getStyledDocument().getLength();
@@ -61,8 +60,8 @@ public class Frame extends JFrame {
 
 		/*
 		StyleConstants.setBackground(set, Color.BLACK);
-		Document doc = jtp.getStyledDocument();
 		 */
+		Document doc = jtp.getStyledDocument();
 		try
 		{
 			doc.insertString(offset, text, set);//insert le texte
@@ -72,9 +71,6 @@ public class Frame extends JFrame {
 		}
 	}
 	
-	void addCloseListenser() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
 	void lanchFrame() {
 		setSize(600,400);
 		setLocation(50,50);
@@ -82,12 +78,4 @@ public class Frame extends JFrame {
 	}
 
 	private static final long serialVersionUID = 1L;
-	public static void main(String[] args) {
-		Frame f = new Frame();
-		f.lanchFrame();
-		
-	}
-
-
-
 }

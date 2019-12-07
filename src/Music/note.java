@@ -17,13 +17,13 @@ public class note implements Serializable{
 	byte[] data;
 	boolean isMetaNote;
 	//notes (avec leur durée, leur hauteur, et peut-être leur date)
-	public note(byte[] data,int type,long time) {
+	public note(byte[] data,int type,double time) {
 		this.data = data;
 		this.action = type;
 		this.time = time;
 		isMetaNote = true;
 	}
-	public note(int action,int channel, int hauteur, int puissance,long time) {
+	public note(int action,int channel, int hauteur, int puissance,double time) {
 		// TODO Auto-generated constructor stub
 		this.action = action;
 		this.channel = channel;

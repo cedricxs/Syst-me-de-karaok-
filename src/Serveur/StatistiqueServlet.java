@@ -1,10 +1,8 @@
 package Serveur;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import Resource.Request;
 import Resource.Response;
 
@@ -14,15 +12,14 @@ public class StatistiqueServlet implements Servlet {
 	private Map<String,Object> servletContexte;
 	
 	public StatistiqueServlet(String name) {
-		// TODO Auto-generated constructor stub
 		this.name = name;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return this.name;
 	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -40,13 +37,8 @@ public class StatistiqueServlet implements Servlet {
 			}
 		}
 		String username = req.getUtilisateur();
-		int lectures = 0;
-		if (!nb_lectures.containsKey(username)){
-
+		if (!nb_lectures.containsKey(username))
 			nb_lectures.put(username,0);
-		}else{
-			lectures = nb_lectures.get(username);
-		}
 		int max_lectures = 0;
 		String max_user = null;
 		for(String user:nb_lectures.keySet()){
@@ -67,7 +59,6 @@ public class StatistiqueServlet implements Servlet {
 
 	@Override
 	public void setServletContexte(Map<String, Object> servletContexte) {
-		// TODO Auto-generated method stub
 		this.servletContexte  = servletContexte;
 	}
 

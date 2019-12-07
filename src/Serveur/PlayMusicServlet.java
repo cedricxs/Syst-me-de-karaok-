@@ -41,7 +41,6 @@ public class PlayMusicServlet implements Servlet{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void service(Request req, Response res) {
-		// TODO Auto-generated method stub
 		Map<String,Integer> nb_joue = (Map<String, Integer>) servletContexte.get("nb_joue");
 		Map<String,Integer> nb_lectures = (Map<String, Integer>) servletContexte.get("nb_lectures");
 		String musicName = (String)req.getContent();
@@ -54,13 +53,12 @@ public class PlayMusicServlet implements Servlet{
 		}
 		else {
 			int nb = nb_joue.get(musicName);
-			nb_joue.put(musicName,++nb);
+			nb_joue.replace(musicName,++nb);
 			int nb_user = nb_lectures.get(username);
 			nb_lectures.replace(username,++nb_user);
 			res.setStatus(200);
 			res.setContent(music);
 		}
-
 	}
 
 	@Override
@@ -92,8 +90,6 @@ public class PlayMusicServlet implements Servlet{
 		String fileName = "music/music/"+musicName+".mid";
 		try {
 			sequence = MidiSystem.getSequence(new File(fileName));
-
-			System.out.println(sequence.getTickLength());
 			int so = sequence.getResolution();
 			double Tempo = 1.0;
 			Track[] tracks = sequence.getTracks();
@@ -108,9 +104,8 @@ public class PlayMusicServlet implements Servlet{
 						int channel = ms.getStatus();
 						int action = ms.getCommand();
 						int hauteur = ms.getData1();
-
 						int puissance = ms.getData2()>127?127:ms.getData2();
-						long time = (long) (e.getTick()*Tempo);
+						double time = e.getTick()*Tempo;
 						track.add(new note(action, channel, hauteur, puissance , time));
 					}
 					else if(m instanceof MetaMessage) {
@@ -118,25 +113,22 @@ public class PlayMusicServlet implements Servlet{
 						int action = ms.getType();
 						byte[] data = ms.getData();
 						if(action==81) {
-
 							int bpm = PlayMusicServlet.bytesToInt2(data);
-							System.out.println(bpm);
 							Tempo = (double)bpm/(1000*so);
-							System.out.println(so);
-							System.out.println(Tempo);
-							for(note n:track) {
+							for(int k=0;k<i;k++) {
+								ArrayList<note> k_track = music.getNotes().get(k);
+								for(note n:k_track) {
 								n.setTime(n.getTime()*Tempo);
-							}
+								}
+							}	
 						}
-						//int channel = ms.getChannel();
-						long time = (long) (e.getTick()*Tempo);
+						double time = e.getTick()*Tempo;
 						track.add(new note(data,action,time));
 					}
 				}
 			}
 			return true;
 		} catch (InvalidMidiDataException | IOException e1) {
-			// TODO Auto-generated catch block
 			return false;
 		}
 	}
@@ -192,7 +184,7 @@ public class PlayMusicServlet implements Servlet{
                     }
                 }
                 parole last = paroles.get(paroles.size()-1);
-            	last.setDuree(10);
+            	last.setDuree(1000);
                 read.close();
                 System.out.println("parse fini...");
                 return true;

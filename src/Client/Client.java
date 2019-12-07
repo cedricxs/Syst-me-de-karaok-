@@ -3,7 +3,6 @@ package Client;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 import Resource.Connector;
@@ -36,17 +35,17 @@ public class Client{
 
 	//initialiser le client
 	public void InitClient(){
-			player = new MyPlayer();
-			console = new Scanner(System.in);
-			//envoie un requete pour statistique
-			Request req = new Request("statistique");
-			req.setUtilisateur(utilisateur);
-			connexion.send(req);
+		player = new MyPlayer();
+		console = new Scanner(System.in);
 	}
 
 
 	public void start() {
 		new Thread(connexion).start();
+		//envoie un requete pour statistique
+		Request statistique = new Request("statistique");
+		statistique.setUtilisateur(utilisateur);
+		connexion.send(statistique);
 		while(true) {
 			//obtient un String depuis console et le parse devient requete
 			String content = console.nextLine();
@@ -59,12 +58,7 @@ public class Client{
 	}
 
 	public void playMusic(Music music) {
-		try{
-			player.playMusic(music);
-		}catch (Exception e){
-			System.out.println(e.getStackTrace());
-		}
-
+		player.playMusic(music);
 	}
 
 
@@ -78,25 +72,29 @@ public class Client{
 
 	Data parseRequest(String content) {
 		Request req;
-		if(content.indexOf("show")!=-1){
-			req = new Request("show");
-		}
-		else if(content.indexOf("cv")!=-1) {
-			float rate = Float.valueOf(content.split(":")[1]);
-			player.changeVite(rate);
+		try {
+			if(content.indexOf("show")!=-1){
+				req = new Request("show");
+			}
+			else if(content.indexOf("cv")!=-1) {
+				Double rate = Double.valueOf(content.split(":")[1]);
+				player.changeVite(rate);
+				return null;
+			}
+			else if(content.indexOf("ch")!=-1) {
+				int hauteur = Integer.valueOf(content.split(":")[1]);
+				player.changeHauteur(hauteur);
+				return null;
+			}
+			else{
+				req = new Request("play");
+				req.setContent(content);
+			}
+			req.setUtilisateur(utilisateur);
+			return req;
+		}catch(Exception e) {
 			return null;
 		}
-		else if(content.indexOf("ch")!=-1) {
-			int hauteur = Integer.valueOf(content.split(":")[1]);
-			player.changeHauteur(hauteur);
-			return null;
-		}
-		else{
-			req = new Request("play");
-			req.setContent(content);
-		}
-		req.setUtilisateur(utilisateur);
-		return req;
 	}
 
 	//parse un reponde
@@ -122,7 +120,7 @@ public class Client{
 			System.out.println("Nombre de lectures : "+nb);
 			System.out.println("Utilisateur ayant joué le plus de morceaux : " + max_user + " avec " + max_lectures + " morceaux");
 		}
-		else {
+		else if(res.getStatus()==200){
 			Music music = (Music)res.getContent();
 			playMusic(music);
 		}
