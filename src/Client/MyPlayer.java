@@ -119,6 +119,7 @@ public class MyPlayer{
 															  channel.programChange(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
 														  }
 													  }
+													  paroleFrame.changeBeat(notes.get(pos).getHauteur());
 													  pos++;
 													  if(pos==notes.size()) {
 														  this.cancel();
