@@ -14,7 +14,7 @@ public class MyPlayer{
 	ArrayList<Timer> timers;
 	Frame paroleFrame;
 	double vitesseRate;
-	int pussanceOffset;
+	int puissanceOffset;
 	Map<Integer,String> Type_parole;
 	Map<Integer,String> Voix_parole;
 	Map<Integer,Color> Voix_color;
@@ -55,7 +55,7 @@ public class MyPlayer{
 		}
 		timers.clear();
 		vitesseRate = 1.0;
-		pussanceOffset = 0;
+		puissanceOffset = 0;
 		for(int i=0;i<3;i++) {
 			Activer_voix.replace(i,true);			
 		}
@@ -118,8 +118,7 @@ public class MyPlayer{
 		try {
 			syn.open();
 		} catch (MidiUnavailableException e) {
-			
-			System.out.println("echou ouvrir Synthesizer");
+			System.out.println("échec de l'ouverture du synthesizer");
 		}
 		final MidiChannel[] channels = syn.getChannels();
 		for(int i=0;i<music.getNotes().size();i++) {
@@ -138,10 +137,10 @@ public class MyPlayer{
 													  if(time>=notes.get(pos).getTime()) {
 														  note current = notes.get(pos);
 														  if(128==current.getCommand()) {
-															  channel.noteOff(current.getHauteur(), current.getPuissance()-pussanceOffset>0?current.getPuissance()-pussanceOffset:0);
+															  channel.noteOff(current.getHauteur(), current.getPuissance()-puissanceOffset>0?current.getPuissance()-puissanceOffset:0);
 														  }
 														  else if(144==current.getCommand()) {
-															  channel.noteOn(current.getHauteur(), current.getPuissance()-pussanceOffset>0?current.getPuissance()-pussanceOffset:0);
+															  channel.noteOn(current.getHauteur(), current.getPuissance()-puissanceOffset>0?current.getPuissance()-puissanceOffset:0);
 														  }
 														  else if(160==current.getCommand()) {
 															  channel.setPolyPressure(current.getHauteur(), current.getPuissance());
@@ -168,8 +167,8 @@ public class MyPlayer{
     public void changeVite(double vitesseRate) {
     	this.vitesseRate = vitesseRate;
 	}
-    public void changeHauteur(int pussanceOffset) {
-    	this.pussanceOffset = pussanceOffset;
+    public void changeHauteur(int puissanceOffset) {
+    	this.puissanceOffset = puissanceOffset;
 	}
     public void changeActiver(int voix) {
     	if(Activer_voix.get(voix)) {

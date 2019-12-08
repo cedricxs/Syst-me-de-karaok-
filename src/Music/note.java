@@ -5,23 +5,23 @@ import java.io.Serializable;
 public class note implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	int command;
+	long duree;
 	double time;
-	long dure;
 	int hauteur;
 	int puissance;
-	//notes (avec leur durée, leur hauteur, et peut-être leur date)
-	public note(int command, int hauteur, int puissance,double time) {
+	int command;
+	//notes (avec leur durée, leur hauteur, et leur position)
+	public note(int command, int hauteur, int puissance, double time) {
 		this.command = command;
 		this.puissance = puissance;
 		this.hauteur = hauteur;
 		this.time = time;
 	}
-	public void setDure(long dure) {
-		this.dure = dure;
+	public void setDuree(long duree) {
+		this.duree = duree;
 	}
-	public long getDure() {
-		return this.dure;
+	public long getDuree() {
+		return this.duree;
 	}
 	public int getHauteur() {
 		return this.hauteur;

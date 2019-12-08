@@ -77,13 +77,13 @@ public class PlayMusicServlet implements Servlet{
 	}
 
 	/**
-	 * parse le fichier de .mid
+	 * parse le fichier .mid
 	 *
-	 * @param musicName: le nom de musique
+	 * @param musicName: Titre de la musique
 	 *
-	 * @param music: enregistre les notes apres parser
+	 * @param music: Enregistre les notes apres le parse
 	 *
-	 * @return l'etat de parser : boolean
+	 * @return Etat du parse : booleen
 	 */
 	public boolean parseNotes(String musicName, Music music) {
 		Sequence sequence;
@@ -215,7 +215,7 @@ public class PlayMusicServlet implements Servlet{
         int s = Integer.parseInt(sec);
         int ms = Integer.parseInt(mill);
         if (s >= 60) {
-            System.out.println("warning: un mal formation de date--> [" + min + ":" + sec + "."
+            System.out.println("warning: format de date invalide --> [" + min + ":" + sec + "."
                     + mill.substring(0, 2) + "]");
         }
         // calculer le nombre de millseconde

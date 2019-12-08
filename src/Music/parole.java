@@ -4,11 +4,10 @@ import java.io.Serializable;
 
 public class parole implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	//type:0->trémolo,1->crié,2->portamento
+	// type:0->trémolo
+	// 1->crié
+	// 2->portamento
 	int type;
 	//voix:0->homme,1->femme,2->choeurs
 	int voix;

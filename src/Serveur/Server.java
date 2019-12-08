@@ -76,7 +76,7 @@ public class Server {
 			try {
 				socket = server.accept();
 				startChannel(socket);
-				System.out.println("Un client est arrivé :)");
+				System.out.println("Client connecté");
 			} catch (IOException e) {
 				System.out.println("Client non accepté");
 			}

@@ -10,8 +10,11 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 public class Frame extends JFrame {
+	//Panneau pour afficher le texte
 	JTextPane jtp;
+	//Panneau pour afficher l'animation (pulsation)
 	Animation beat;
+	//Panneau pour superposer le texte et l'animation
 	JLayeredPane layeredPane;
 	Frame(){
 		super();
@@ -55,25 +58,24 @@ public class Frame extends JFrame {
 			e.printStackTrace();
 		}
 	}
-	//insert un texte avec couleur et offset dans le textPane
+	//Insertion d'un texte dans le panneau de texte jtp
 	public void insertDocument(String text , Color textColor,int offset)
 	{
 		SimpleAttributeSet set = new SimpleAttributeSet();
-		StyleConstants.setForeground(set, textColor);//assigne couleur
-		StyleConstants.setFontSize(set, 12);//assigne pointure
-
-		//StyleConstants.setBackground(set, Color.BLACK);
+		StyleConstants.setForeground(set, textColor); 	// Assigne une couleur
+		StyleConstants.setFontSize(set, 12);		//	Assigne une taille de police
 
 		Document doc = jtp.getStyledDocument();
 		try
 		{
-			doc.insertString(offset, text, set);//insert le texte
+			doc.insertString(offset, text, set);	//	Insère le texte
 		}
 		catch (BadLocationException e)
 		{
 		}
 	}
 
+	//Animation selon la hauteur de la note jouee
 	public void changeBeat(int hauteur){
 		try {
 			if(hauteur > 0) {
