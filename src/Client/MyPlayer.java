@@ -14,7 +14,7 @@ public class MyPlayer{
 	ArrayList<Timer> timers;
 	Frame paroleFrame;
 	double vitesseRate;
-	int pussanceOffset;
+	int puissanceOffset;
 	Map<Integer,String> Type_parole;
 	Synthesizer syn;
 	
@@ -40,7 +40,7 @@ public class MyPlayer{
 		}
 		timers.clear();
 		vitesseRate = 1.0;
-		pussanceOffset = 0;
+		puissanceOffset = 0;
 		playParoles(music);
 		playNotes(music);
 	}
@@ -109,10 +109,10 @@ public class MyPlayer{
 												  try {
 													  if(time>=notes.get(pos).getTime()) {
 														  if(128==notes.get(pos).getCommand()) {
-															  channel.noteOff(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-pussanceOffset>0?notes.get(pos).getPuissance()-pussanceOffset:0);
+															  channel.noteOff(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-puissanceOffset>0?notes.get(pos).getPuissance()-puissanceOffset:0);
 														  }
 														  else if(144==notes.get(pos).getCommand()) {
-															  channel.noteOn(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-pussanceOffset>0?notes.get(pos).getPuissance()-pussanceOffset:0);
+															  channel.noteOn(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-puissanceOffset>0?notes.get(pos).getPuissance()-puissanceOffset:0);
 														  }
 														  else if(160==notes.get(pos).getCommand()) {
 															  channel.setPolyPressure(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
@@ -141,6 +141,6 @@ public class MyPlayer{
     	this.vitesseRate = vitesseRate;
 	}
     public void changeHauteur(int pussanceOffset) {
-    	this.pussanceOffset = pussanceOffset;
+    	this.puissanceOffset = pussanceOffset;
 	}
 }
