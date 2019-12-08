@@ -89,7 +89,7 @@ public class Client{
 			}
 			else if(content.indexOf("ca")!=-1) {
 				int voix = Integer.valueOf(content.split(":")[1]);
-				player.changeActiver(voix);
+				player.changerActivation(voix);
 				return null;
 			}
 			else{

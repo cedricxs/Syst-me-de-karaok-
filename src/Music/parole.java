@@ -11,7 +11,7 @@ public class parole implements Serializable{
 	int type;
 	//voix:0->homme,1->femme,2->choeurs
 	int voix;
-	//les positions de lyrics de ce parole dois chante
+	//Position des paroles
 	long time;
 	long duree;
 	String text;

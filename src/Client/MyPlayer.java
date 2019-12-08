@@ -168,7 +168,7 @@ public class MyPlayer{
     public void changeHauteur(int puissanceOffset) {
     	this.puissanceOffset = puissanceOffset;
 	}
-    public void changeActiver(int voix) {
+    public void changerActivation(int voix) {
     	if(Activer_voix.get(voix)) {
     		Activer_voix.replace(voix, false);  
     		System.out.println("Desactiver "+Voix_parole.get(voix));

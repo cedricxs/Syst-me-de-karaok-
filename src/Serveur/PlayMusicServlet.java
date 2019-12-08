@@ -200,7 +200,7 @@ public class PlayMusicServlet implements Servlet{
     }
 
     /**
-     * retourner le nombre de millseconde(long) selon le l'entree de min,sec,millsec
+     * Retourne le nombre de millseconde(long) selon l'entree en min,sec,ms
      *
      * @param min
      *
@@ -218,7 +218,7 @@ public class PlayMusicServlet implements Servlet{
             System.out.println("warning: format de date invalide --> [" + min + ":" + sec + "."
                     + mill.substring(0, 2) + "]");
         }
-        // calculer le nombre de millseconde
+        // Calcule le nombre de ms
         long time = m * 60 * 1000 + s * 1000 + ms;
         return time;
     }
