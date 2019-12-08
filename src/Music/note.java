@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class note implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	long dure;
+	long duree;
 	int hauteur;
 	double time;
 	int puissance;
@@ -18,11 +18,11 @@ public class note implements Serializable{
 		this.hauteur = hauteur;
 		this.time = time;
 	}
-	public void setDure(long dure) {
-		this.dure = dure;
+	public void setDuree(long duree) {
+		this.duree = duree;
 	}
-	public long getDure() {
-		return this.dure;
+	public long getDuree() {
+		return this.duree;
 	}
 	public int getHauteur() {
 		return this.hauteur;

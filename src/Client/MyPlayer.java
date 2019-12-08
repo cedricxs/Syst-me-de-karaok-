@@ -140,7 +140,7 @@ public class MyPlayer{
     public void changeVite(double vitesseRate) {
     	this.vitesseRate = vitesseRate;
 	}
-    public void changeHauteur(int pussanceOffset) {
-    	this.puissanceOffset = pussanceOffset;
+    public void changeHauteur(int puissanceOffset) {
+    	this.puissanceOffset = puissanceOffset;
 	}
 }
