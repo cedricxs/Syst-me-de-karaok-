@@ -77,16 +77,10 @@ public class Frame extends JFrame {
 
 	//Animation selon la hauteur de la note jouee
 	public void changeBeat(int hauteur){
-		try {
-			if(hauteur > 0) {
-				synchronized (layeredPane) {
-					layeredPane.remove(layeredPane.getIndexOf(beat));
-					beat.h = 2*hauteur;
-					beat.w = 2*hauteur;
-					layeredPane.add(beat, JLayeredPane.DEFAULT_LAYER);					
-				}
-			}
-		}catch(Exception e) {		
+		if(hauteur > 0) {
+				beat.h = 2*hauteur;
+				beat.w = 2*hauteur;
+				repaint();
 		}
 	}
 
