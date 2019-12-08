@@ -76,7 +76,7 @@ public class MyPlayer{
 		    public void run() {
 		    	time+=vitesseRate;   	
 		    	if(pos<paroles.size()&&time>=paroles.get(pos).getTime()) {
-		    		ChangeProcessus(p,time);
+		    		if(affiche[pos-1>0?pos-1:0])ChangeProcessus(p,time);
 		    		p = paroles.get(pos);
 		    		pos++;
 		    		if(!Activer_voix.get(p.getVoix()))return;
