@@ -91,7 +91,7 @@ public class MyPlayer{
 		try {
 			syn.open();
 		} catch (MidiUnavailableException e) {
-			System.out.println("echou ouvrir Synthesizer");
+			System.out.println("échec de l'ouverture du synthesizer");
 		}
 		final MidiChannel[] channels = syn.getChannels();
 		for(int i=0;i<music.getNotes().size();i++) {
