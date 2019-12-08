@@ -79,13 +79,14 @@ public class Frame extends JFrame {
 	public void changeBeat(int hauteur){
 		try {
 			if(hauteur > 0) {
-				layeredPane.remove(layeredPane.getIndexOf(beat));
-				beat.w = 2*hauteur;
-				beat.h = 2*hauteur;
-				layeredPane.add(beat, JLayeredPane.DEFAULT_LAYER);
+				synchronized (layeredPane) {
+					layeredPane.remove(layeredPane.getIndexOf(beat));
+					beat.h = 2*hauteur;
+					beat.w = 2*hauteur;
+					layeredPane.add(beat, JLayeredPane.DEFAULT_LAYER);					
+				}
 			}
-		}catch(Exception e) {
-			
+		}catch(Exception e) {		
 		}
 	}
 

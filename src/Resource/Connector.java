@@ -43,7 +43,7 @@ public abstract class Connector implements Runnable{
 			Data data = (Data)in.readObject();
 			return data;
 		} catch (ClassNotFoundException | IOException e) {
-			System.out.println("Echec de la réception des données...");
+			System.out.println("Fin de la réception des données...");
 			isRunning = false;
 			close();
 		}

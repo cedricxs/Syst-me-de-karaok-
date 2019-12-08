@@ -32,7 +32,7 @@ public class MyPlayer{
 			Voix_parole.put(2,"choeurs");
 			Voix_color = new HashMap<Integer, Color>();
 			Voix_color.put(0, Color.BLUE);
-			Voix_color.put(1, Color.CYAN);
+			Voix_color.put(1, Color.PINK);
 			Voix_color.put(2, Color.ORANGE);
 			Activer_voix = new HashMap<Integer, Boolean>();
 			Activer_voix.put(0,true);
@@ -80,9 +80,7 @@ public class MyPlayer{
 		    		p = paroles.get(pos);
 		    		pos++;
 		    		if(!Activer_voix.get(p.getVoix()))return;
-		    		if(p.getText().isEmpty()) {
-		    			paroleFrame.insertDocument("\n",Color.GRAY,paroleFrame.length());
-		    		}else {
+		    		if(!p.getText().isEmpty()){
 			    		paroleFrame.insertDocument(Type_parole.get(p.getType()), Color.green,paroleFrame.length());
 			    		paroleFrame.insertDocument(Voix_parole.get(p.getVoix())+":", Voix_color.get(p.getVoix()),paroleFrame.length());
 		    			paroleFrame.insertDocument(p.getText()+"\n", Color.GRAY,paroleFrame.length());
