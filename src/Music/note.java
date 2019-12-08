@@ -10,8 +10,8 @@ public class note implements Serializable{
 	double time;
 	int puissance;
 	int command;
-	//notes (avec leur durée, leur hauteur, et peut-être leur date)
-	public note(int command, int hauteur, int puissance,double time) {
+	//notes (avec leur durée, leur hauteur, et leur position)
+	public note(int command, int hauteur, int puissance, double time) {
 		// TODO Auto-generated constructor stub
 		this.command = command;
 		this.puissance = puissance;

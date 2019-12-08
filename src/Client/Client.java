@@ -13,15 +13,15 @@ import Resource.Request;
 import Resource.Response;
 
 public class Client{
-	//connector communique avec serveur
+	//Connexion pour communiquer avec le serveur
 	Connector connexion;
 	MyPlayer player;
-	//console pour rentrer les commandes
+	//Console pour les commandes
 	Scanner console;
 	String utilisateur;
 	public Client() {
 		try {
-			//connecter avec serveur
+			//Connection avec serveur
 			connexion = new ConnectorClient(new Socket("127.0.0.1",8888),this);
 			InitClient();
 		} catch (UnknownHostException e) {
@@ -32,7 +32,7 @@ public class Client{
 		}
 	}
 
-	//initialiser le client
+	//Initialisation du client
 	public void InitClient(){
 		player = new MyPlayer();
 		console = new Scanner(System.in);
@@ -43,16 +43,15 @@ public class Client{
 
 	public void start() {
 		new Thread(connexion).start();
-		//envoie un requete pour statistique
+		//Envoie une requete pour récupérer les statistiques d'écoute
 		Request statistique = new Request("statistique");
 		statistique.setUtilisateur(utilisateur);
 		connexion.send(statistique);
 		while(true) {
-			//obtient un String depuis console et le parse devient requete
+			//Parse la commande de l'utilisateur et l'envoie au serveur
 			String content = console.nextLine();
 			Data req = parseRequest(content);
 			if(req!=null) {
-				//l'envoie a serveur
 				connexion.send(req);
 			}
 		}
@@ -70,6 +69,7 @@ public class Client{
 			System.out.println("parseResponse échoué...");
 		}
 	}
+
 
 	Data parseRequest(String content) {
 		Request req;
@@ -98,8 +98,8 @@ public class Client{
 		}
 	}
 
-	//parse un reponde
-	/*reponde.status:300->showAllMusic
+	//parse une reponse
+	/*response.status:300->showAllMusic
 					 404->No such Music
 					 200->Ok
 					 100->Statistique

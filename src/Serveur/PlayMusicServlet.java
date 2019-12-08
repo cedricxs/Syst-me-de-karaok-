@@ -77,13 +77,13 @@ public class PlayMusicServlet implements Servlet{
 	}
 
 	/**
-	 * parse le fichier de .mid
+	 * parse le fichier .mid
 	 *
-	 * @param musicName: le nom de musique
+	 * @param musicName: Titre de la musique
 	 *
-	 * @param music: enregistre les notes apres parser
+	 * @param music: Enregistre les notes apres le parse
 	 *
-	 * @return l'etat de parser : boolean
+	 * @return Etat du parse : booleen
 	 */
 	public boolean parseNotes(String musicName, Music music) {
 		Sequence sequence;
