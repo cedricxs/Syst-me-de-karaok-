@@ -159,7 +159,12 @@ public class PlayMusicServlet implements Servlet{
                 Pattern pattern = Pattern.compile(regex); // creer Pattern
                 String lineStr = null; // lire un ligne chaque fois
                 int i=0;
+                long offset = 0;
                 while ((lineStr = bufferedReader.readLine()) != null) {
+                	if(lineStr.indexOf("offset")!=-1) {
+                		String off = lineStr.substring(1, lineStr.length()-1);
+                		offset = Long.valueOf(off.split(":")[1]);
+                	}
                     Matcher matcher = pattern.matcher(lineStr);
                     while (matcher.find()) {
                         // [02:34.94] ----correspendant---> [min:sec.millsec]
@@ -169,13 +174,13 @@ public class PlayMusicServlet implements Servlet{
                         long time = getLongTime(min, sec, mill + "0");
                         // obtenir le parole pour le moment
                         String text = lineStr.substring(matcher.end());
-
+                        parole p = new parole(time-offset>0?time-offset:0,text);
+                        p.setType(i++%3);
+                        p.setVoix(i%3);
                         if(!paroles.isEmpty()) {
                         	parole last = paroles.get(paroles.size()-1);
-                        	last.setDuree(time-last.getTime());
+                        	last.setDuree(p.getTime()-last.getTime());
                         }
-                        parole p = new parole(time,text);
-                        p.setType(i++%3);
                         paroles.add(p);
                     }
                 }

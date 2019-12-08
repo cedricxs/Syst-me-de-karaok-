@@ -5,14 +5,13 @@ import java.io.Serializable;
 public class note implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	int command;
+	double time;
 	long dure;
 	int hauteur;
-	double time;
 	int puissance;
-	int command;
 	//notes (avec leur durée, leur hauteur, et peut-être leur date)
 	public note(int command, int hauteur, int puissance,double time) {
-		// TODO Auto-generated constructor stub
 		this.command = command;
 		this.puissance = puissance;
 		this.hauteur = hauteur;

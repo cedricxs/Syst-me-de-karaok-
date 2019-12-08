@@ -87,6 +87,11 @@ public class Client{
 				player.changeHauteur(hauteur);
 				return null;
 			}
+			else if(content.indexOf("ca")!=-1) {
+				int voix = Integer.valueOf(content.split(":")[1]);
+				player.changeActiver(voix);
+				return null;
+			}
 			else{
 				req = new Request("play");
 				req.setContent(content);

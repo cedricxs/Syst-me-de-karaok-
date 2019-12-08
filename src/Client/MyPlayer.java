@@ -16,6 +16,9 @@ public class MyPlayer{
 	double vitesseRate;
 	int pussanceOffset;
 	Map<Integer,String> Type_parole;
+	Map<Integer,String> Voix_parole;
+	Map<Integer,Color> Voix_color;
+	Map<Integer,Boolean> Activer_voix;
 	Synthesizer syn;
 	
 	public MyPlayer() {
@@ -23,7 +26,19 @@ public class MyPlayer{
 			Type_parole.put(0,"(trémolo)");
 			Type_parole.put(1,"(crié)");
 			Type_parole.put(2,"(portamento)");
-			timers = new ArrayList<>();
+			Voix_parole = new HashMap<Integer, String>();
+			Voix_parole.put(0,"homme");
+			Voix_parole.put(1,"femme");
+			Voix_parole.put(2,"choeurs");
+			Voix_color = new HashMap<Integer, Color>();
+			Voix_color.put(0, Color.BLUE);
+			Voix_color.put(1, Color.CYAN);
+			Voix_color.put(2, Color.ORANGE);
+			Activer_voix = new HashMap<Integer, Boolean>();
+			Activer_voix.put(0,true);
+			Activer_voix.put(1,true);
+			Activer_voix.put(2,true);
+			timers = new ArrayList<Timer>();
 			paroleFrame = new Frame();
 			try {
 				syn = MidiSystem.getSynthesizer();
@@ -41,6 +56,9 @@ public class MyPlayer{
 		timers.clear();
 		vitesseRate = 1.0;
 		pussanceOffset = 0;
+		for(int i=0;i<3;i++) {
+			Activer_voix.replace(i,true);			
+		}
 		playParoles(music);
 		playNotes(music);
 	}
@@ -50,6 +68,7 @@ public class MyPlayer{
 		Timer timer = new Timer();
 		timers.add(timer);
 		paroleFrame.lanchFrame();
+		boolean[] affiche = new boolean[paroles.size()];
 		timer.scheduleAtFixedRate(new TimerTask() {
 			double time = 0.0;
 			int pos = 0;
@@ -59,10 +78,18 @@ public class MyPlayer{
 		    	if(pos<paroles.size()&&time>=paroles.get(pos).getTime()) {
 		    		ChangeProcessus(p,time);
 		    		p = paroles.get(pos);
-		    		paroleFrame.insertDocument(Type_parole.get(p.getType())+":", Color.green,paroleFrame.length());
-	    			paroleFrame.insertDocument(p.getText()+"\n", Color.GRAY,paroleFrame.length());
-	    			pos++;
+		    		pos++;
+		    		if(!Activer_voix.get(p.getVoix()))return;
+		    		if(p.getText().isEmpty()) {
+		    			paroleFrame.insertDocument("\n",Color.GRAY,paroleFrame.length());
+		    		}else {
+			    		paroleFrame.insertDocument(Type_parole.get(p.getType()), Color.green,paroleFrame.length());
+			    		paroleFrame.insertDocument(Voix_parole.get(p.getVoix())+":", Voix_color.get(p.getVoix()),paroleFrame.length());
+		    			paroleFrame.insertDocument(p.getText()+"\n", Color.GRAY,paroleFrame.length());
+		    		}
+		    		affiche[pos-1] = true;
 		    	}else {
+		    		if(!affiche[pos-1>0?pos-1:0])return;
 		    		ChangeProcessus(p,time);
 		    		if(pos==paroles.size()&&time>=p.getTime()+p.getDuree())this.cancel();
 		    	}
@@ -83,7 +110,7 @@ public class MyPlayer{
 		if(position>last) {
 			String r = paroleFrame.getDocument(paroleFrame.length()-rest-1,1);
 			paroleFrame.removeDocument(paroleFrame.length()-rest-1,1);
-			paroleFrame.insertDocument(r, Color.green, paroleFrame.length()-rest);
+			paroleFrame.insertDocument(r, Voix_color.get(p.getVoix()), paroleFrame.length()-rest);
 		}
 	}
 
@@ -91,6 +118,7 @@ public class MyPlayer{
 		try {
 			syn.open();
 		} catch (MidiUnavailableException e) {
+			
 			System.out.println("echou ouvrir Synthesizer");
 		}
 		final MidiChannel[] channels = syn.getChannels();
@@ -108,23 +136,23 @@ public class MyPlayer{
 												  time += vitesseRate;
 												  try {
 													  if(time>=notes.get(pos).getTime()) {
-														  if(128==notes.get(pos).getCommand()) {
-															  channel.noteOff(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-pussanceOffset>0?notes.get(pos).getPuissance()-pussanceOffset:0);
+														  note current = notes.get(pos);
+														  if(128==current.getCommand()) {
+															  channel.noteOff(current.getHauteur(), current.getPuissance()-pussanceOffset>0?current.getPuissance()-pussanceOffset:0);
 														  }
-														  else if(144==notes.get(pos).getCommand()) {
-															  channel.noteOn(notes.get(pos).getHauteur(), notes.get(pos).getPuissance()-pussanceOffset>0?notes.get(pos).getPuissance()-pussanceOffset:0);
+														  else if(144==current.getCommand()) {
+															  channel.noteOn(current.getHauteur(), current.getPuissance()-pussanceOffset>0?current.getPuissance()-pussanceOffset:0);
 														  }
-														  else if(160==notes.get(pos).getCommand()) {
-															  channel.setPolyPressure(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
+														  else if(160==current.getCommand()) {
+															  channel.setPolyPressure(current.getHauteur(), current.getPuissance());
 														  }
-														  else if(176==notes.get(pos).getCommand()) {
-															  channel.controlChange(notes.get(pos).getHauteur(), notes.get(pos).getPuissance());
+														  else if(176==current.getCommand()) {
+															  channel.controlChange(current.getHauteur(), current.getPuissance());
 														  }
-														  else if(192==notes.get(pos).getCommand()) {
-															  channel.programChange(notes.get(pos).getPuissance(), notes.get(pos).getHauteur());
+														  else if(192==current.getCommand()) {
+															  channel.programChange(current.getPuissance(), current.getHauteur());
 														  }
-														  
-														  paroleFrame.changeBeat(notes.get(pos).getHauteur());
+														  paroleFrame.changeBeat(current.getHauteur());
 														  pos++;
 														  if(pos==notes.size()) {
 															  this.cancel();
@@ -143,4 +171,13 @@ public class MyPlayer{
     public void changeHauteur(int pussanceOffset) {
     	this.pussanceOffset = pussanceOffset;
 	}
+    public void changeActiver(int voix) {
+    	if(Activer_voix.get(voix)) {
+    		Activer_voix.replace(voix, false);  
+    		System.out.println("Desactiver "+Voix_parole.get(voix));
+    	}else {
+    		Activer_voix.replace(voix, true);    		
+    		System.out.println("Activer "+Voix_parole.get(voix));
+    	}
+    }
 }

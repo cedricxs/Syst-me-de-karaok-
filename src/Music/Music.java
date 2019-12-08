@@ -5,9 +5,6 @@ import java.util.ArrayList;
 
 public class Music implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	String name;
 	private ArrayList<ArrayList<note>> notes;
@@ -27,12 +24,6 @@ public class Music implements Serializable{
 	
 	public ArrayList<parole> getParoles(){
 		return this.paroles;
-	}
-	public void setVitesse(int vitesse) {
-		this.vitesse = vitesse;
-	}
-	public int getVitesse() {
-		return this.vitesse;
 	}
 	public String getName() {
 		return this.name;
