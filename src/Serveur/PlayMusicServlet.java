@@ -210,7 +210,7 @@ public class PlayMusicServlet implements Servlet{
         int s = Integer.parseInt(sec);
         int ms = Integer.parseInt(mill);
         if (s >= 60) {
-            System.out.println("warning: un mal formation de date--> [" + min + ":" + sec + "."
+            System.out.println("warning: format de date invalide --> [" + min + ":" + sec + "."
                     + mill.substring(0, 2) + "]");
         }
         // calculer le nombre de millseconde
